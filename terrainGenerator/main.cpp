@@ -55,13 +55,13 @@ void init(void){
    // lightInit();
     
     // fog
-    GLfloat fogColor[] = { 1.0, 0.5, 0.5, 1 };
+    GLfloat fogColor[] = { 0.0, 0.0, 0.0, 1 };
     glEnable(GL_FOG);
     glFogi (GL_FOG_MODE, GL_LINEAR);
     glFogfv (GL_FOG_COLOR, fogColor);
     glFogf (GL_FOG_DENSITY, 0.35);
-    glFogf(GL_FOG_START, 200.0);
-    glFogf(GL_FOG_END, 250.0);
+    glFogf(GL_FOG_START, 400.0);
+    glFogf(GL_FOG_END, 450.0);
     glHint (GL_FOG_HINT, GL_DONT_CARE);
     glFogi(GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH);
     
@@ -69,10 +69,13 @@ void init(void){
     glEnable(GL_DEPTH_TEST);
     
     //load the height map in
-    g_bruteForce.MakeTerrainPlasma( 128, 1.0f );
-    g_bruteForce.SetHeightScale( 0.25f );
+    g_bruteForce.MakeTerrainPlasma(1024, 1.0f );
+    //g_bruteForce.MakeTerrainFault(512, 40, 0, 255, 0.2f);
+    g_bruteForce.SetHeightScale( 0.3f );
+      //  char fileout[] {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/mickael.raw"};
+   // g_bruteForce.SaveHeightMap(fileout);
    
-    
+
     //load the height map in
     //char file[] {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/height128.raw"};
     //g_bruteForce.LoadHeightMap(file, 128 );
