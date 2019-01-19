@@ -8,7 +8,7 @@
 
 #include "light.hpp"
 
-GLfloat light_position[] = { 1.0, 30.0, 1.0, 1.0 };
+GLfloat light_position[] = { 1.0, 100, 1.0, 1.0 };
 GLfloat white_light[] = { 0.9, 0.9, 0.9, 1 };
 GLfloat lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
 

@@ -12,6 +12,8 @@
 		CEB99E5D21F14F3E008AF8CB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5C21F14F3D008AF8CB /* OpenGL.framework */; };
 		CEB99E6521F1561A008AF8CB /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6121F1561A008AF8CB /* light.cpp */; };
 		CEB99E6621F1561A008AF8CB /* keyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6221F1561A008AF8CB /* keyboard.cpp */; };
+		CEB99E7021F3A38B008AF8CB /* terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6D21F3A38B008AF8CB /* terrain.cpp */; };
+		CEB99E7121F3A38B008AF8CB /* brute_force.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +37,11 @@
 		CEB99E6021F1561A008AF8CB /* light.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = light.hpp; sourceTree = "<group>"; };
 		CEB99E6121F1561A008AF8CB /* light.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = light.cpp; sourceTree = "<group>"; };
 		CEB99E6221F1561A008AF8CB /* keyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = keyboard.cpp; sourceTree = "<group>"; };
+		CEB99E6C21F3A38A008AF8CB /* terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = terrain.h; sourceTree = "<group>"; };
+		CEB99E6D21F3A38B008AF8CB /* terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = terrain.cpp; sourceTree = "<group>"; };
+		CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = brute_force.cpp; sourceTree = "<group>"; };
+		CEB99E6F21F3A38B008AF8CB /* brute_force.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = brute_force.h; sourceTree = "<group>"; };
+		CEB99E7221F3AD67008AF8CB /* height128.raw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = height128.raw; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +77,11 @@
 		CEB99E5121F133D0008AF8CB /* terrainGenerator */ = {
 			isa = PBXGroup;
 			children = (
+				CEB99E7221F3AD67008AF8CB /* height128.raw */,
+				CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */,
+				CEB99E6F21F3A38B008AF8CB /* brute_force.h */,
+				CEB99E6D21F3A38B008AF8CB /* terrain.cpp */,
+				CEB99E6C21F3A38A008AF8CB /* terrain.h */,
 				CEB99E6221F1561A008AF8CB /* keyboard.cpp */,
 				CEB99E5F21F1561A008AF8CB /* keyboard.hpp */,
 				CEB99E6121F1561A008AF8CB /* light.cpp */,
@@ -145,6 +157,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEB99E5321F133D0008AF8CB /* main.cpp in Sources */,
+				CEB99E7021F3A38B008AF8CB /* terrain.cpp in Sources */,
+				CEB99E7121F3A38B008AF8CB /* brute_force.cpp in Sources */,
 				CEB99E6621F1561A008AF8CB /* keyboard.cpp in Sources */,
 				CEB99E6521F1561A008AF8CB /* light.cpp in Sources */,
 			);
