@@ -10,10 +10,8 @@
 		CEB99E5321F133D0008AF8CB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E5221F133D0008AF8CB /* main.cpp */; };
 		CEB99E5B21F14F37008AF8CB /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5A21F14F37008AF8CB /* GLUT.framework */; };
 		CEB99E5D21F14F3E008AF8CB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5C21F14F3D008AF8CB /* OpenGL.framework */; };
-		CEB99E6421F1561A008AF8CB /* grid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E5E21F15619008AF8CB /* grid.cpp */; };
 		CEB99E6521F1561A008AF8CB /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6121F1561A008AF8CB /* light.cpp */; };
 		CEB99E6621F1561A008AF8CB /* keyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6221F1561A008AF8CB /* keyboard.cpp */; };
-		CEB99E6921F162A8008AF8CB /* terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6721F162A8008AF8CB /* terrain.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,14 +31,10 @@
 		CEB99E5221F133D0008AF8CB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		CEB99E5A21F14F37008AF8CB /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		CEB99E5C21F14F3D008AF8CB /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		CEB99E5E21F15619008AF8CB /* grid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = grid.cpp; sourceTree = "<group>"; };
 		CEB99E5F21F1561A008AF8CB /* keyboard.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = keyboard.hpp; sourceTree = "<group>"; };
 		CEB99E6021F1561A008AF8CB /* light.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = light.hpp; sourceTree = "<group>"; };
 		CEB99E6121F1561A008AF8CB /* light.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = light.cpp; sourceTree = "<group>"; };
 		CEB99E6221F1561A008AF8CB /* keyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = keyboard.cpp; sourceTree = "<group>"; };
-		CEB99E6321F1561A008AF8CB /* grid.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = grid.hpp; sourceTree = "<group>"; };
-		CEB99E6721F162A8008AF8CB /* terrain.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = terrain.cpp; sourceTree = "<group>"; };
-		CEB99E6821F162A8008AF8CB /* terrain.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = terrain.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,15 +70,11 @@
 		CEB99E5121F133D0008AF8CB /* terrainGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				CEB99E5E21F15619008AF8CB /* grid.cpp */,
-				CEB99E6321F1561A008AF8CB /* grid.hpp */,
 				CEB99E6221F1561A008AF8CB /* keyboard.cpp */,
 				CEB99E5F21F1561A008AF8CB /* keyboard.hpp */,
 				CEB99E6121F1561A008AF8CB /* light.cpp */,
 				CEB99E6021F1561A008AF8CB /* light.hpp */,
 				CEB99E5221F133D0008AF8CB /* main.cpp */,
-				CEB99E6721F162A8008AF8CB /* terrain.cpp */,
-				CEB99E6821F162A8008AF8CB /* terrain.hpp */,
 			);
 			path = terrainGenerator;
 			sourceTree = "<group>";
@@ -154,9 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEB99E6921F162A8008AF8CB /* terrain.cpp in Sources */,
 				CEB99E5321F133D0008AF8CB /* main.cpp in Sources */,
-				CEB99E6421F1561A008AF8CB /* grid.cpp in Sources */,
 				CEB99E6621F1561A008AF8CB /* keyboard.cpp in Sources */,
 				CEB99E6521F1561A008AF8CB /* light.cpp in Sources */,
 			);

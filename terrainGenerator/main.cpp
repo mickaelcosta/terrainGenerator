@@ -17,14 +17,12 @@
 #include <GLUT/GLUT.h>
 #include "light.hpp"
 #include "keyboard.hpp"
-#include "grid.hpp"
-#include "terrain.hpp"
 
 using namespace std;
 
+
 void display(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    desenhaGrid(50);
     desenhaEsfera(esferaX, esferaY, esferaZ);
     glutSwapBuffers();
 }
