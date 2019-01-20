@@ -14,6 +14,7 @@
 		CEB99E6621F1561A008AF8CB /* keyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6221F1561A008AF8CB /* keyboard.cpp */; };
 		CEB99E7021F3A38B008AF8CB /* terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6D21F3A38B008AF8CB /* terrain.cpp */; };
 		CEB99E7121F3A38B008AF8CB /* brute_force.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */; };
+		CEB99E7621F4E830008AF8CB /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E7521F4E82F008AF8CB /* image.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +43,9 @@
 		CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = brute_force.cpp; sourceTree = "<group>"; };
 		CEB99E6F21F3A38B008AF8CB /* brute_force.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = brute_force.h; sourceTree = "<group>"; };
 		CEB99E7221F3AD67008AF8CB /* height128.raw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = height128.raw; sourceTree = "<group>"; };
+		CEB99E7321F4E185008AF8CB /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
+		CEB99E7521F4E82F008AF8CB /* image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
+		CEB99E7721F4E832008AF8CB /* image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = image.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,9 +81,12 @@
 		CEB99E5121F133D0008AF8CB /* terrainGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				CEB99E7221F3AD67008AF8CB /* height128.raw */,
+				CEB99E7321F4E185008AF8CB /* data */,
 				CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */,
 				CEB99E6F21F3A38B008AF8CB /* brute_force.h */,
+				CEB99E7521F4E82F008AF8CB /* image.cpp */,
+				CEB99E7721F4E832008AF8CB /* image.h */,
+				CEB99E7221F3AD67008AF8CB /* height128.raw */,
 				CEB99E6D21F3A38B008AF8CB /* terrain.cpp */,
 				CEB99E6C21F3A38A008AF8CB /* terrain.h */,
 				CEB99E6221F1561A008AF8CB /* keyboard.cpp */,
@@ -161,6 +168,7 @@
 				CEB99E7121F3A38B008AF8CB /* brute_force.cpp in Sources */,
 				CEB99E6621F1561A008AF8CB /* keyboard.cpp in Sources */,
 				CEB99E6521F1561A008AF8CB /* light.cpp in Sources */,
+				CEB99E7621F4E830008AF8CB /* image.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

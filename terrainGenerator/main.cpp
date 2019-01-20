@@ -31,6 +31,7 @@ enum FRACTAL_ALGORITHM
 CBRUTE_FORCE g_bruteForce;
 FRACTAL_ALGORITHM g_iFractalAlgo;
 int g_iCurrentHeightmap= 0;
+bool g_bTexture= true;
 
 
 //-----------------------------------------
@@ -40,6 +41,7 @@ int g_iCurrentHeightmap= 0;
 void display(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //render the simple terrain!
+    g_bruteForce.DoTextureMapping( g_bTexture );
     g_bruteForce.Render();
     //render da esfera
     desenhaEsfera(esferaX, esferaY, esferaZ);
@@ -52,7 +54,7 @@ void init(void){
     glShadeModel(GL_SMOOTH);
     
     //light
-   // lightInit();
+    //lightInit();
     
     // fog
     GLfloat fogColor[] = { 0.0, 0.0, 0.0, 1 };
@@ -69,17 +71,16 @@ void init(void){
     glEnable(GL_DEPTH_TEST);
     
     //load the height map in
-    g_bruteForce.MakeTerrainPlasma(1024, 1.0f );
-    //g_bruteForce.MakeTerrainFault(512, 40, 0, 255, 0.2f);
+    g_bruteForce.MakeTerrainPlasma(256, 1.0f );
     g_bruteForce.SetHeightScale( 0.3f );
-      //  char fileout[] {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/mickael.raw"};
-   // g_bruteForce.SaveHeightMap(fileout);
-   
+    
+    //texturing
+    //load the terrain texture in
+    
+    char file_image[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/grass_1.tga"};
+    g_bruteForce.LoadTexture(file_image);
+    g_bruteForce.DoTextureMapping( g_bTexture );
 
-    //load the height map in
-    //char file[] {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/height128.raw"};
-    //g_bruteForce.LoadHeightMap(file, 128 );
-    //g_bruteForce.SetHeightScale( 0.25f );
 }
 
 void reshape(int w, int h){
@@ -111,6 +112,7 @@ void selectColor(int item){
 
 void menu(int item){
     if(item == 1)
+        g_bruteForce.UnloadHeightMap();
         exit(0);
 }
 
@@ -142,7 +144,6 @@ int main(int argc, char** argv) {
     init();
     glutMainLoop();
     
-    atexit(unloadHeightMap);
     return 0;
 }
 

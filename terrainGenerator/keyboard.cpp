@@ -13,14 +13,14 @@
 using namespace std;
 
 //definição das variáveis
-GLfloat esferaX = 100.0, esferaY = 85.0, esferaZ = 125.0;
+GLfloat esferaX = 200.0, esferaY = 110.0, esferaZ = 265.0;
 GLfloat cameraX = esferaX + 3.0, cameraY = esferaY + 5.0 , cameraZ = esferaZ + 5.0;
 
 void desenhaEsfera(GLfloat x, GLfloat y, GLfloat z){
     glPushMatrix();
     glTranslatef(x, y, z);
     glutSolidSphere(1, 10, 10);
-    cout << "Posição esfera " << esferaX <<" " << esferaY << " " << esferaZ <<endl;
+  //  cout << "Posição esfera " << esferaX <<" " << esferaY << " " << esferaZ <<endl;
     glPopMatrix();
 }
 
