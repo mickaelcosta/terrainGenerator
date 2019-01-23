@@ -21,12 +21,41 @@
 #include <stdlib.h>
 #include "image.h"
 
+#define TRN_NUM_TILES 5
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 //- STRUCTURES -------------------------------------------------
 //--------------------------------------------------------------
 //--------------------------------------------------------------
+enum ETILE_TYPES
+{
+    LOWEST_TILE= 0,        //sand, dirt, etc.
+    LOW_TILE,            //grass
+    HIGH_TILE,            //mountainside
+    HIGHEST_TILE        //tip of mountain
+};
+
+struct STRN_HEIGHT_DATA
+{
+    unsigned char* m_ucpData;    //the height data
+    int m_iSize;                //the height size (must be a power of 2)
+};
+
+struct STRN_TEXTURE_REGIONS
+{
+    int m_iLowHeight;            //lowest possible height (0%)
+    int m_iOptimalHeight;        //optimal height (100%)
+    int m_iHighHeight;            //highest possible height (0%)
+};
+
+struct STRN_TEXTURE_TILES
+{
+    STRN_TEXTURE_REGIONS m_regions[TRN_NUM_TILES];    //texture regions
+    CIMAGE textureTiles[TRN_NUM_TILES];                //texture tiles
+    int iNumTiles;
+};
+
 struct SHEIGHT_DATA
 {
 	unsigned char* m_ucpData;	//the height data
@@ -41,13 +70,18 @@ struct SHEIGHT_DATA
 class CTERRAIN
 {
 	protected:
-		SHEIGHT_DATA m_heightData;	//the height data
-
+		//SHEIGHT_DATA m_heightData;	//the height data
+        STRN_HEIGHT_DATA m_heightData;    //the height data2
 		float m_fHeightScale;		//scaling variable
 
-        //texturing variables
-        CIMAGE m_texture;
-        bool   m_bTextureMapping;
+    //texture information
+    STRN_TEXTURE_TILES m_tiles;
+    CIMAGE m_texture;
+    CIMAGE m_detailMap;
+    int       m_iRepeatDetailMap;
+    bool   m_bMultitexture;
+    bool   m_bTextureMapping;
+    bool   m_bDetailMapping;
     
 		int m_iVertsPerFrame;		//stat variables
 		int m_iTrisPerFrame;
@@ -57,7 +91,28 @@ class CTERRAIN
 	void FilterHeightBand( float* fpBand, int iStride, int iCount, float fFilter );
 	void FilterHeightField( float* fpHeightData, float fFilter );
 
+    //texture map generation functions
+    float RegionPercent( int tileType, unsigned char ucHeight );
+    void GetTexCoords( CIMAGE texture, unsigned int* x, unsigned int* y );
+    unsigned char InterpolateHeight( int x, int z, float fHeightToTexRatio );
 
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::Limit - private
+    // Description:        Limit the given unsigned char value to 0-255
+    // Arguments:        -ucValue: Value to check
+    // Return Value:    An unsigned char value: the limited value
+    //--------------------------------------------------------------
+    unsigned char Limit( unsigned char ucValue )
+    {
+        if( ucValue>255 )
+            return 255;
+        else if( ucValue<0 )
+            return 0;
+        
+        return ucValue;
+    }
+    
+    
 	public:
 		int m_iSize;	//the size of the heightmap, must be a power of two
 
@@ -71,7 +126,10 @@ class CTERRAIN
 	bool MakeTerrainFault( int iSize, int iIterations, int iMinDelta, int iMaxDelta, float fFilter );
 	bool MakeTerrainPlasma( int iSize, float fRoughness );
 
-	//--------------------------------------------------------------
+    //texture map generation
+    void GenerateTextureMap( unsigned int uiSize );
+    
+    //--------------------------------------------------------------
 	// Name:			CTERRAIN::GetNumVertsPerFrame - public
 	// Description:		Get the number of vertices being sent to the
 	//					API every frame
@@ -138,7 +196,22 @@ class CTERRAIN
 	inline float GetScaledHeightAtPoint( int iX, int iZ )
 	{	return ( ( float )( m_heightData.m_ucpData[( iZ*m_iSize )+iX] )*m_fHeightScale );	}
 
-    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::SaveTextureMap - public
+    // Description:        Save the current texture map to a file
+    // Arguments:        -szFilename: Name of the file to save to
+    // Return Value:    A boolean value: -true: successful save
+    //                                     -false: unsuccessful save
+    //--------------------------------------------------------------
+    inline bool SaveTextureMap( char* szFilename )
+    {
+        //first check to see if a texture is loaded, if so, save it!
+        if( m_texture.IsLoaded( ) )
+            return ( m_texture.Save( szFilename ) );
+        
+        return false;
+    }
+
     //texturing
     inline void DoTextureMapping( bool bDo )
     {    m_bTextureMapping= bDo;    }
@@ -153,11 +226,89 @@ class CTERRAIN
     inline bool LoadTexture( char* szFilename )
     {    return ( m_texture.Load( szFilename, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, true ) );    }
     
+    inline void UnloadTexture( void )
+    {    m_texture.Unload( );    }
     
-	CTERRAIN( void )
-	{	}
-	~CTERRAIN( void )
-	{	}
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::LoadDetailMap - public
+    // Description:        Load a detail map to add realism to the terrain
+    // Arguments:        -szFilename: Name of the file to load
+    // Return Value:    A boolean value: -true: successful load
+    //                                     -false: unsuccessful load
+    //--------------------------------------------------------------
+    inline bool LoadDetailMap( char* szFilename )
+    {    return m_detailMap.Load( szFilename, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, true );    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::UnloadDetailMap - public
+    // Description:        Unload the terrain's detail map
+    // Arguments:        None
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void UnloadDetailMap( void )
+    {    m_detailMap.Unload( );    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::DoDetailMapping - public
+    // Description:        Do a detail map texture pass (which is much more
+    //                    economical if we can use hardware multitexturing)
+    // Arguments:        -bDo: Do detail mapping or not
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void DoDetailMapping( bool bDo, int iRepeatNum= 0 )
+    {
+        m_bDetailMapping  = bDo;
+        m_iRepeatDetailMap= iRepeatNum;
+    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::DoMultitexturing - public
+    // Description:        Do hardware multitexturing
+    // Arguments:        -bDo: Use hardware multitexturing or not
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void DoMultitexturing( bool bDo )
+    {    m_bMultitexture= bDo;    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::LoadTile - public
+    // Description:        Load a single tile for the texture generation
+    // Arguments:        -tileType: the tile type to load
+    //                    -szFilename: filename of the tile to load in
+    // Return Value:    A boolean value: -true: successful load
+    //                                     -false: unsuccessful load
+    //--------------------------------------------------------------
+    inline bool LoadTile( ETILE_TYPES tileType, char* szFilename )
+    {    return m_tiles.textureTiles[tileType].LoadData( szFilename );    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::UnloadTile - public
+    // Description:        Unload a single tile
+    // Arguments:        -tileType: the texture which is currently loaded
+    //                               for this tile type
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void UnloadTile( ETILE_TYPES tileType )
+    {    m_tiles.textureTiles[tileType].Unload( );    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::UnloadAllTiles - public
+    // Description:        Unload all tiles for the texture generation
+    // Arguments:        None
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void UnloadAllTiles( void )
+    {
+        UnloadTile( LOWEST_TILE );
+        UnloadTile( LOW_TILE );
+        UnloadTile( HIGH_TILE );
+        UnloadTile( HIGHEST_TILE );
+    }
+    
+    CTERRAIN( void )
+    {    }
+    ~CTERRAIN( void )
+    {    }
 };
 
-#endif	//__TERRAIN_H__
+#endif    //__TERRAIN_H__

@@ -31,7 +31,9 @@ enum FRACTAL_ALGORITHM
 CBRUTE_FORCE g_bruteForce;
 FRACTAL_ALGORITHM g_iFractalAlgo;
 int g_iCurrentHeightmap= 0;
+
 bool g_bTexture= true;
+bool g_bDetail = true;
 
 
 //-----------------------------------------
@@ -42,9 +44,16 @@ void display(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //render the simple terrain!
     g_bruteForce.DoTextureMapping( g_bTexture );
-    g_bruteForce.Render();
+    g_bruteForce.DoDetailMapping( g_bDetail, 8 );
+    glPushMatrix( );
+    glScalef( 2.0f, 2.0f, 2.0f );
+    g_bruteForce.Render( );
+    glPopMatrix( );
+    
     //render da esfera
     desenhaEsfera(esferaX, esferaY, esferaZ);
+    
+    //render
     glutSwapBuffers();
 }
 
@@ -71,15 +80,28 @@ void init(void){
     glEnable(GL_DEPTH_TEST);
     
     //load the height map in
-    g_bruteForce.MakeTerrainPlasma(256, 1.0f );
-    g_bruteForce.SetHeightScale( 0.3f );
+    g_bruteForce.MakeTerrainPlasma(128, 1.0f );
+    g_bruteForce.SetHeightScale( 0.25f );
     
-    //texturing
-    //load the terrain texture in
+
+    //load the various terrain tiles
+    g_bruteForce.LoadTile( LOWEST_TILE,  "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowestTile.tga" );
+    g_bruteForce.LoadTile( LOW_TILE,     "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowTile.tga" );
+    g_bruteForce.LoadTile( HIGH_TILE,    "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/HighTile.tga" );
+    g_bruteForce.LoadTile( HIGHEST_TILE, "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/highestTile.tga" );
     
-    char file_image[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/grass_1.tga"};
-    g_bruteForce.LoadTexture(file_image);
+    //load the terrain's detail map
+    g_bruteForce.LoadDetailMap( "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/detailMap.tga" );
+    g_bruteForce.DoDetailMapping( g_bDetail, 8 );
+    
+    //make the texture map, and then save it
+    g_bruteForce.GenerateTextureMap( 256 );
     g_bruteForce.DoTextureMapping( g_bTexture );
+    g_bruteForce.DoMultitexturing(true);
+    
+   // char file_image[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/grass_1.tga"};
+   // g_bruteForce.LoadTexture(file_image);
+    //g_bruteForce.DoTextureMapping( g_bTexture );
 
 }
 
