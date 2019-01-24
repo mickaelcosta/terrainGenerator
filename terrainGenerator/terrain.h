@@ -20,8 +20,10 @@
 //--------------------------------------------------------------
 #include <stdlib.h>
 #include "image.h"
+#include "math_ops.h"
 
 #define TRN_NUM_TILES 5
+
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -34,6 +36,18 @@ enum ETILE_TYPES
     LOW_TILE,            //grass
     HIGH_TILE,            //mountainside
     HIGHEST_TILE        //tip of mountain
+};
+enum ELIGHTING_TYPES
+{
+    HEIGHT_BASED= 0,
+    LIGHTMAP,
+    SLOPE_LIGHT
+};
+
+struct STRN_LIGHTMAP_DATA
+{
+    unsigned char* m_ucpData;
+    int m_iSize;
 };
 
 struct STRN_HEIGHT_DATA
@@ -82,10 +96,15 @@ class CTERRAIN
     bool   m_bMultitexture;
     bool   m_bTextureMapping;
     bool   m_bDetailMapping;
-    
-		int m_iVertsPerFrame;		//stat variables
-		int m_iTrisPerFrame;
 
+    //lighting information
+    ELIGHTING_TYPES m_lightingType;
+    STRN_LIGHTMAP_DATA m_lightmap;
+    CVECTOR m_vecLightColor;
+    float m_fMinBrightness, m_fMaxBrightness;
+    float m_fLightSoftness;
+    int m_iDirectionX, m_iDirectionZ;
+    
 	//fractal terrain generation
 	void NormalizeTerrain( float* fpHeightData );
 	void FilterHeightBand( float* fpBand, int iStride, int iCount, float fFilter );
@@ -129,25 +148,12 @@ class CTERRAIN
     //texture map generation
     void GenerateTextureMap( unsigned int uiSize );
     
-    //--------------------------------------------------------------
-	// Name:			CTERRAIN::GetNumVertsPerFrame - public
-	// Description:		Get the number of vertices being sent to the
-	//					API every frame
-	// Arguments:		None
-	// Return Value:	An integer value: number of vertices rendered per frame
-	//--------------------------------------------------------------
-	inline int GetNumVertsPerFrame( void )
-	{	return m_iVertsPerFrame;	}
-
-	//--------------------------------------------------------------
-	// Name:			CTERRAIN::GetNumTrisPerSec - public
-	// Description:		Get the number of triangles being rendered every frame
-	// Arguments:		None
-	// Return Value:	An integer value: number of triangles rendered every frame
-	//--------------------------------------------------------------
-	inline int GetNumTrisPerFrame( void )
-	{	return m_iTrisPerFrame;	}
-
+    //lighting functions
+    bool LoadLightMap( char* szFilename, int iSize );
+    bool SaveLightMap( char* szFilename );
+    void UnloadLightMap( void );
+    
+    void CalculateLighting( void );
 	//--------------------------------------------------------------
 	// Name:			CTERRAIN::RangedRandom - public
 	// Description:		Get a random value between the two arguments
@@ -303,6 +309,70 @@ class CTERRAIN
         UnloadTile( LOW_TILE );
         UnloadTile( HIGH_TILE );
         UnloadTile( HIGHEST_TILE );
+    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::SetLightingType - public
+    // Description:        Set the lighting technique to be used
+    // Arguments:        -lightingType: which lighting technique to use
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void SetLightingType( ELIGHTING_TYPES lightingType )
+    {    m_lightingType= lightingType;    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::SetBrightnessAtPoint - public
+    // Description:        A function to set the brightness value at a
+    //                    certain point in a lightmap
+    // Arguments:        -x, z: which height value to set
+    //                    -ucBrightness: value to set the lightmap pixel to
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void SetBrightnessAtPoint( int x, int z, unsigned char ucBrightness )
+    {    m_lightmap.m_ucpData[( z*m_lightmap.m_iSize )+x]= ucBrightness;    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::GetBrightnessAtPoint - public
+    // Description:        A function to get the brightness value at a
+    //                    certain point in a lightmap
+    // Arguments:        -x, z: which height value to retrieve
+    // Return Value:    An unsigned char value: the brightness
+    //--------------------------------------------------------------
+    inline unsigned char GetBrightnessAtPoint( int x, int z )
+    {    return ( m_lightmap.m_ucpData[( z*m_lightmap.m_iSize )+x] );    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::SetLightColor - public
+    // Description:        Set the color of the terrain's lighting system
+    // Arguments:        -vecColor: the color of the light
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void SetLightColor( CVECTOR vecColor )
+    {    m_vecLightColor= vecColor;    }
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::CustomizeSlopeLighting - public
+    // Description:        Customize the parameters for slope lighting
+    // Arguments:        -iDirX, iDirZ: direction of the light, which can only
+    //                                   be a whole number.
+    //                    -fSoftness: the softness of the shadows
+    //                    -fMinBrightness, fMaxBrightness: the min/max brightness
+    //                                                     of the light
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void CustomizeSlopeLighting( int iDirX, int iDirZ,
+                                       float fMinBrightness, float fMaxBrightness, float fSoftness )
+    {
+        //set the light direction
+        m_iDirectionX= iDirX;
+        m_iDirectionZ= iDirZ;
+        
+        //set the min/max shading values
+        m_fMinBrightness= fMinBrightness;
+        m_fMaxBrightness= fMaxBrightness;
+        
+        //the light's softness
+        m_fLightSoftness= fSoftness;
     }
     
     CTERRAIN( void )

@@ -132,14 +132,7 @@ void CBRUTE_FORCE::Render( void )
                     glColor3ub( 255, 255, 255 );
                     glMultiTexCoord2fARB( GL_TEXTURE0_ARB, fTexLeft, fTexTop );
                     glVertex3f( ( float )x, GetScaledHeightAtPoint( x, z+1 ), ( float )z+1 );
-                    
-                    //increase the vertex count by two (which is how many we sent to the API)
-                    m_iVertsPerFrame+= 2;
-                    
-                    //there are no triangles being rendered on the first X-loop, they just start the
-                    //triangle strip off
-                    if( x!= 0 )
-                        m_iTrisPerFrame+= 2;
+                
                 }
                 //end the triangle strip
                 glEnd( );
@@ -202,13 +195,6 @@ void CBRUTE_FORCE::Render( void )
                 glMultiTexCoord2fARB( GL_TEXTURE0_ARB, fTexLeft*m_iRepeatDetailMap, fTexTop*m_iRepeatDetailMap );
                 glVertex3f( ( float )x, GetScaledHeightAtPoint( x, z+1 ), ( float )z+1 );
                 
-                //increase the vertex count by two (which is how many we sent to the API)
-                m_iVertsPerFrame+= 2;
-                
-                //there are no triangles being rendered on the first X-loop, they just start the
-                //triangle strip off
-                if( x!= 0 )
-                    m_iTrisPerFrame+= 2;
             }
             
             //end the triangle strip

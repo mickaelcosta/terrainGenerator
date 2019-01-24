@@ -808,3 +808,177 @@ void CTERRAIN::GenerateTextureMap( unsigned int uiSize )
     //set the texture's ID
     m_texture.SetID( iTempID );
 }
+//--------------------------------------------------------------
+// Name:            CTERRAIN::LoadLightMap - public
+// Description:        Load a grayscale RAW light map
+// Arguments:        -szFilename: the file name of the light map
+//                    -im_iSize: the m_iSize (power of 2) of the map
+// Return Value:    A boolean value: -true: successful load
+//                                     -false: unsuccessful load
+//--------------------------------------------------------------
+bool CTERRAIN::LoadLightMap( char* szFilename, int iSize )
+{
+    FILE* pFile;
+    
+    //check to see if the data has been set
+    if( m_lightmap.m_ucpData )
+        UnloadLightMap( );
+    
+    //open the RAW lightmap
+    pFile= fopen( szFilename, "rb" );
+    if( pFile==NULL )
+    {
+        //bad filename
+        cout << "Could not load lightmap\n";
+        return false;
+    }
+    
+    //allocate the memory for our lightmap
+    m_lightmap.m_ucpData= new unsigned char [iSize*iSize];
+    
+    //check to see if memory was successfully allocated
+    if( m_lightmap.m_ucpData==NULL )
+    {
+        //the memory could not be allocated something is seriously wrong here
+        cout << "Could not allocate memory for lightmap\n";
+        return false;
+    }
+    
+    //read the lightmap into context
+    fread( m_lightmap.m_ucpData, 1, iSize*iSize, pFile );
+    
+    //Close the file
+    fclose( pFile );
+    
+    //set the m_iSize data
+    m_lightmap.m_iSize= iSize;
+    
+    //WOOHOO! The lightmap has been successfully loaded
+   cout<< "Loaded lightmap\n";
+    return true;
+}
+
+//--------------------------------------------------------------
+// Name:            CTERRAIN::SaveLightMap - public
+// Description:        Save a grayscale RAW light map to a file
+// Arguments:        -szFilename: the filename of the light map
+// Return Value:    A boolean value: -true: successful save
+//                                     -false: unsuccessful save
+//--------------------------------------------------------------
+bool CTERRAIN::SaveLightMap( char* szFilename )
+{
+    FILE* pFile;
+    
+    //open a file for the RAW lightmap to be saved to
+    pFile= fopen( szFilename, "wb" );
+    if( pFile==NULL )
+    {
+        //could not open the file for writing
+        cout << "Could not create file for lightmap\n";
+        return false;
+    }
+    
+    //check to see if we have data to actually write to a file
+    if( m_lightmap.m_ucpData==NULL )
+    {
+        //something is seriously wrong here
+        cout << "The height data buffer for lightmap is empty\n";
+        return false;
+    }
+    
+    //write the lightmap to the file
+    fwrite( m_lightmap.m_ucpData, 1, m_lightmap.m_iSize*m_lightmap.m_iSize, pFile );
+    
+    //close the file
+    fclose( pFile );
+    
+    //yahoo! The lightmap has been successfully written
+    cout << "Saved lightmap\n";
+    return true;
+}
+
+//--------------------------------------------------------------
+// Name:            CTERRAIN::UnloadLightMap - public
+// Description:        Unload the class's light map (if there is one)
+// Arguments:        None
+// Return Value:    None
+//--------------------------------------------------------------
+void CTERRAIN::UnloadLightMap( void )
+{
+    //check to see if the data has been set
+    if( m_lightmap.m_ucpData )
+    {
+        //delete the data
+        delete[] m_lightmap.m_ucpData;
+        
+        //reset the map dimensions also
+        m_iSize= 0;
+    }
+    
+    //the height map has been unloaded
+   cout << "Successfully unloaded the light map\n" ;
+}
+
+//--------------------------------------------------------------
+// Name:            CTERRAIN::CalculateLighting - public
+// Description:        Calculates lighting for the pre-set technique, and
+//                    stores all computations in a lightmap
+// Arguments:        None
+// Return Value:    None
+//--------------------------------------------------------------
+void CTERRAIN::CalculateLighting( void )
+{
+    float fShade;
+    int x, z;
+    
+    //a lightmap has already been provided, no need to create one :)
+    if( m_lightingType==LIGHTMAP )
+        return;
+    
+    //allocate memory if it is needed
+    if( m_lightmap.m_iSize!=m_iSize || m_lightmap.m_ucpData==NULL )
+    {
+        //delete the memory for the old data
+        delete[] m_lightmap.m_ucpData;
+        
+        //allocate memory for the new lightmap data buffer
+        m_lightmap.m_ucpData= new unsigned char [m_iSize*m_iSize];
+        m_lightmap.m_iSize= m_iSize;
+    }
+    
+    //loop through all vertices
+    for( z=0; z<m_iSize; z++ )
+    {
+        for( x=0; x<m_iSize; x++ )
+        {
+            //using height-based lighting, trivial
+            if( m_lightingType==HEIGHT_BASED )
+                SetBrightnessAtPoint( x, z, GetTrueHeightAtPoint( x, z ) );
+            
+            //using the slope-lighting technique
+            else if( m_lightingType==SLOPE_LIGHT )
+            {
+                //ensure that we won't be stepping over array boundaries by doing this
+                if( z>=m_iDirectionZ && x>=m_iDirectionX )
+                {
+                    //calculate the shading value using the "slope lighting" algorithm
+                    fShade= 1.0f-( GetTrueHeightAtPoint( x-m_iDirectionX, z-m_iDirectionZ ) -
+                                  GetTrueHeightAtPoint( x, z ) )/m_fLightSoftness;
+                }
+                
+                //if we are, then just return a very bright color value (white)
+                else
+                    fShade= 1.0f;
+                
+                //clamp the shading value to the min/max brightness boundaries
+                if( fShade<m_fMinBrightness )
+                    fShade= m_fMinBrightness;
+                if( fShade>m_fMaxBrightness )
+                    fShade= m_fMaxBrightness;
+                
+                //set the new brightness for our lightmap
+                SetBrightnessAtPoint( x, z, ( unsigned char )( fShade*255 ) );
+            }
+        }
+    }
+}

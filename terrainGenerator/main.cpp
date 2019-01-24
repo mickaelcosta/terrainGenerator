@@ -46,7 +46,7 @@ void display(void){
     g_bruteForce.DoTextureMapping( g_bTexture );
     g_bruteForce.DoDetailMapping( g_bDetail, 8 );
     glPushMatrix( );
-    glScalef( 2.0f, 2.0f, 2.0f );
+    glScalef( 20.0f, 20.0f, 20.0f );
     g_bruteForce.Render( );
     glPopMatrix( );
     
@@ -66,22 +66,29 @@ void init(void){
     //lightInit();
     
     // fog
-    GLfloat fogColor[] = { 0.0, 0.0, 0.0, 1 };
+    GLfloat fogColor[] = { 0.8, 0.8, 0.8, 0.5};
     glEnable(GL_FOG);
+    {
     glFogi (GL_FOG_MODE, GL_LINEAR);
     glFogfv (GL_FOG_COLOR, fogColor);
     glFogf (GL_FOG_DENSITY, 0.35);
-    glFogf(GL_FOG_START, 800.0);
-    glFogf(GL_FOG_END, 820.0);
-    glHint (GL_FOG_HINT, GL_DONT_CARE);
+    glFogf(GL_FOG_START, 2000);
+    glFogf(GL_FOG_END, 2010);
+    glHint (GL_FOG_HINT, GL_FASTEST);
     glFogi(GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH);
-    
+}
     //esconder partes de entidades não visíveis
     glEnable(GL_DEPTH_TEST);
     
     //load the height map in
     g_bruteForce.MakeTerrainPlasma(256, 1.0f );
     g_bruteForce.SetHeightScale( 0.25f );
+    
+    //set the terrain's lighting system up
+    g_bruteForce.SetLightingType( SLOPE_LIGHT );
+    g_bruteForce.SetLightColor( CVECTOR( 1.0f, 1.0f, 1.0f ) );
+    g_bruteForce.CustomizeSlopeLighting( 1, 1, 0.2f, 0.9f, 15 );
+    g_bruteForce.CalculateLighting( );
     
     //load the various terrain tiles
    char file_image1[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowestTile.tga"};
@@ -112,7 +119,7 @@ void reshape(int w, int h){
     glMatrixMode( GL_PROJECTION );   //Select the projection matrix
     glLoadIdentity( );     //Reset the projection matrix
     //Calculate the aspect ratio of the window
-    gluPerspective( 90,(GLfloat) w/(GLfloat) h, 1.0f, 1000.0f );
+    gluPerspective( 90,(GLfloat) w/(GLfloat) h, 1.0f, 3000.0f );
     glMatrixMode( GL_MODELVIEW );  //Select the modelview matrix
     glLoadIdentity( );
     //posicionando a camera

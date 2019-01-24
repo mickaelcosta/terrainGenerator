@@ -13,7 +13,7 @@
 using namespace std;
 
 //definição das variáveis
-GLfloat esferaX = 250.0, esferaY = 110.0, esferaZ = 265.0;
+GLfloat esferaX = 3000.0, esferaY = 1200.0, esferaZ = 2000.0;
 GLfloat cameraX = esferaX + 3.0, cameraY = esferaY + 5.0 , cameraZ = esferaZ + 5.0;
 
 void desenhaEsfera(GLfloat x, GLfloat y, GLfloat z){

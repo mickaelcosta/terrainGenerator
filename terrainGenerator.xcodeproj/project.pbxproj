@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE534C0B21FA38AD00F46240 /* math_ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE534C0921FA38AB00F46240 /* math_ops.cpp */; };
 		CEB99E5321F133D0008AF8CB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E5221F133D0008AF8CB /* main.cpp */; };
 		CEB99E5B21F14F37008AF8CB /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5A21F14F37008AF8CB /* GLUT.framework */; };
 		CEB99E5D21F14F3E008AF8CB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5C21F14F3D008AF8CB /* OpenGL.framework */; };
@@ -30,6 +31,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CE534C0921FA38AB00F46240 /* math_ops.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math_ops.cpp; sourceTree = "<group>"; };
+		CE534C0A21FA38AC00F46240 /* math_ops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = math_ops.h; sourceTree = "<group>"; };
 		CEB99E4F21F133D0008AF8CB /* terrainGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = terrainGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB99E5221F133D0008AF8CB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		CEB99E5A21F14F37008AF8CB /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -82,6 +85,8 @@
 			isa = PBXGroup;
 			children = (
 				CEB99E7321F4E185008AF8CB /* data */,
+				CE534C0921FA38AB00F46240 /* math_ops.cpp */,
+				CE534C0A21FA38AC00F46240 /* math_ops.h */,
 				CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */,
 				CEB99E6F21F3A38B008AF8CB /* brute_force.h */,
 				CEB99E7521F4E82F008AF8CB /* image.cpp */,
@@ -167,6 +172,7 @@
 				CEB99E7021F3A38B008AF8CB /* terrain.cpp in Sources */,
 				CEB99E7121F3A38B008AF8CB /* brute_force.cpp in Sources */,
 				CEB99E6621F1561A008AF8CB /* keyboard.cpp in Sources */,
+				CE534C0B21FA38AD00F46240 /* math_ops.cpp in Sources */,
 				CEB99E6521F1561A008AF8CB /* light.cpp in Sources */,
 				CEB99E7621F4E830008AF8CB /* image.cpp in Sources */,
 			);
