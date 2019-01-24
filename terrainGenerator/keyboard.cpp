@@ -13,7 +13,7 @@
 using namespace std;
 
 //definição das variáveis
-GLfloat esferaX = 200.0, esferaY = 110.0, esferaZ = 265.0;
+GLfloat esferaX = 250.0, esferaY = 110.0, esferaZ = 265.0;
 GLfloat cameraX = esferaX + 3.0, cameraY = esferaY + 5.0 , cameraZ = esferaZ + 5.0;
 
 void desenhaEsfera(GLfloat x, GLfloat y, GLfloat z){
@@ -32,29 +32,29 @@ void Specialkey(int key, int x, int y)
         case GLUT_KEY_UP:
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
-            esferaY += 5.0;
-            cameraY += 5.0;
+            esferaY += 20.0;
+            cameraY += 20.0;
             gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
             break;
         case GLUT_KEY_DOWN:
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
-            esferaY -= 5.0;
-            cameraY -= 5.0;
+            esferaY -= 20.0;
+            cameraY -= 20.0;
             gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
             break;
         case GLUT_KEY_LEFT:
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
-            esferaX -= 5.0;
-            cameraX -= 5.0;
+            esferaX -= 20.0;
+            cameraX -= 20.0;
             gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
             break;
         case GLUT_KEY_RIGHT:
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
-            esferaX += 5.0;
-            cameraX += 5.0;
+            esferaX += 20.0;
+            cameraX += 20.0;
             gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
             break;
     }
@@ -68,15 +68,15 @@ void keyboard(unsigned char key, int x, int y)
         case 'z':
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
-            esferaZ += 5.0;
-            cameraZ += 5.0;
+            esferaZ += 20.0;
+            cameraZ += 20.0;
             gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
             break;
         case 'Z':
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
-            esferaZ -= 5.0;
-            cameraZ -= 5.0;
+            esferaZ -= 20.0;
+            cameraZ -= 20.0;
            gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
             break;
         default:

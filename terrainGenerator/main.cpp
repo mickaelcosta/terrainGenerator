@@ -71,8 +71,8 @@ void init(void){
     glFogi (GL_FOG_MODE, GL_LINEAR);
     glFogfv (GL_FOG_COLOR, fogColor);
     glFogf (GL_FOG_DENSITY, 0.35);
-    glFogf(GL_FOG_START, 400.0);
-    glFogf(GL_FOG_END, 450.0);
+    glFogf(GL_FOG_START, 800.0);
+    glFogf(GL_FOG_END, 820.0);
     glHint (GL_FOG_HINT, GL_DONT_CARE);
     glFogi(GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH);
     
@@ -80,38 +80,42 @@ void init(void){
     glEnable(GL_DEPTH_TEST);
     
     //load the height map in
-    g_bruteForce.MakeTerrainPlasma(128, 1.0f );
+    g_bruteForce.MakeTerrainPlasma(256, 1.0f );
     g_bruteForce.SetHeightScale( 0.25f );
     
-
     //load the various terrain tiles
-    g_bruteForce.LoadTile( LOWEST_TILE,  "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowestTile.tga" );
-    g_bruteForce.LoadTile( LOW_TILE,     "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowTile.tga" );
-    g_bruteForce.LoadTile( HIGH_TILE,    "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/HighTile.tga" );
-    g_bruteForce.LoadTile( HIGHEST_TILE, "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/highestTile.tga" );
+   char file_image1[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowestTile.tga"};
+    g_bruteForce.LoadTile( LOWEST_TILE, file_image1 );
+    char file_image2[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowTile.tga"};
+    g_bruteForce.LoadTile( LOW_TILE, file_image2 );
+    char file_image3[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/HighTile.tga"};
+    g_bruteForce.LoadTile( HIGH_TILE, file_image3 );
+    char file_image4[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/highestTile.tga" };
+    g_bruteForce.LoadTile( HIGHEST_TILE,file_image4);
     
     //load the terrain's detail map
-    g_bruteForce.LoadDetailMap( "/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/detailMap.tga" );
+    char file_image5[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/detailMap.tga" };
+    g_bruteForce.LoadDetailMap(file_image5);
     g_bruteForce.DoDetailMapping( g_bDetail, 8 );
     
     //make the texture map, and then save it
     g_bruteForce.GenerateTextureMap( 256 );
     g_bruteForce.DoTextureMapping( g_bTexture );
     g_bruteForce.DoMultitexturing(true);
-    
-   // char file_image[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/grass_1.tga"};
-   // g_bruteForce.LoadTexture(file_image);
-    //g_bruteForce.DoTextureMapping( g_bTexture );
-
 }
 
 void reshape(int w, int h){
-    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(90.0, (GLfloat) w/(GLfloat) h, 1, 1000.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    if( h==0 )    //Prevent a divide by zero (bad)
+        h= 1;    //Making height equal one
+    
+    glViewport( 0, 0, (GLfloat) w, (GLfloat) h );   //Reset the current viewport
+    glMatrixMode( GL_PROJECTION );   //Select the projection matrix
+    glLoadIdentity( );     //Reset the projection matrix
+    //Calculate the aspect ratio of the window
+    gluPerspective( 90,(GLfloat) w/(GLfloat) h, 1.0f, 1000.0f );
+    glMatrixMode( GL_MODELVIEW );  //Select the modelview matrix
+    glLoadIdentity( );
+    //posicionando a camera
     gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
 }
 
@@ -133,9 +137,10 @@ void selectColor(int item){
 }
 
 void menu(int item){
-    if(item == 1)
+    if(item == 1){
         g_bruteForce.UnloadHeightMap();
         exit(0);
+    }
 }
 
 void unloadHeightMap(){
