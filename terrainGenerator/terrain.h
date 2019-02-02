@@ -87,7 +87,9 @@ class CTERRAIN
 		//SHEIGHT_DATA m_heightData;	//the height data
         STRN_HEIGHT_DATA m_heightData;    //the height data2
 		float m_fHeightScale;		//scaling variable
-
+    
+        CVECTOR m_vecScale;                //scaling variable
+    
     //texture information
     STRN_TEXTURE_TILES m_tiles;
     CIMAGE m_texture;
@@ -134,8 +136,8 @@ class CTERRAIN
     
 	public:
 		int m_iSize;	//the size of the heightmap, must be a power of two
-
-
+    
+    
 	virtual void Render( void )= 0;
 
 	bool LoadHeightMap( char* szFilename, int iSize );
@@ -162,6 +164,15 @@ class CTERRAIN
 	//--------------------------------------------------------------
 	inline float RangedRandom( float f1, float f2 )
 	{	return ( f1+( f2-f1 )*( ( float )rand( ) )/( ( float )RAND_MAX ) );	}
+    
+    //--------------------------------------------------------------
+    // Name:            CTERRAIN::Scale - public
+    // Description:        Scale the width/height/depth of the terrain
+    // Arguments:        -x, y, z: how much to scale the terrain
+    // Return Value:    None
+    //--------------------------------------------------------------
+    inline void Scale( float x, float y, float z )
+    {    m_vecScale.Set( x, y, z );    }
 
 	//--------------------------------------------------------------
 	// Name:			CTERRAIN::SetHeightScale - public
@@ -375,7 +386,7 @@ class CTERRAIN
         m_fLightSoftness= fSoftness;
     }
     
-    CTERRAIN( void )
+    CTERRAIN( void ) : m_vecLightColor( 1.0f, 1.0f, 1.0f ), m_vecScale( 1.0f, 1.0f, 1.0f )
     {    }
     ~CTERRAIN( void )
     {    }

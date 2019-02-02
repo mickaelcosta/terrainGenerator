@@ -16,6 +16,7 @@
 #include "keyboard.hpp"
 #include "brute_force.h"
 #include "terrain.h"
+#include "quadtree.h"
 
 using namespace std;
 
@@ -29,11 +30,16 @@ enum FRACTAL_ALGORITHM
 };
 
 CBRUTE_FORCE g_bruteForce;
+
+CQUADTREE g_quadtree;
+
 FRACTAL_ALGORITHM g_iFractalAlgo;
 int g_iCurrentHeightmap= 0;
 
 bool g_bTexture= true;
 bool g_bDetail = true;
+float g_fDetailLevel  = 50.0f;
+float g_fMinResolution= 10.0f;
 
 
 //-----------------------------------------
@@ -42,12 +48,38 @@ bool g_bDetail = true;
 
 void display(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    //agua
+    glBegin(GL_QUADS);
+    glColor3f(0.0 , 0.0, 1.0);
+    glVertex3d(0, 90, 0);
+    glVertex3d(0, 90, 4104);
+    glVertex3d(4104, 90, 4104);
+    glVertex3d(4104, 90, 0);
+    glEnd();
+    
+    /*
     //render the simple terrain!
     g_bruteForce.DoTextureMapping( g_bTexture );
     g_bruteForce.DoDetailMapping( g_bDetail, 8 );
     glPushMatrix( );
-    glScalef( 20.0f, 20.0f, 20.0f );
+    glScalef( 10.0f, 10.0f, 10.0f );
     g_bruteForce.Render( );
+    glPopMatrix( );
+    */
+ 
+    //update the terrain
+    g_quadtree.SetDetailLevel( g_fDetailLevel );
+    g_quadtree.SetMinResolution( g_fMinResolution );
+    
+    g_quadtree.DoTextureMapping( g_bTexture );
+    g_quadtree.DoDetailMapping( g_bDetail, 16 );
+    g_quadtree.Update( );
+    
+    //render the simple terrain!
+    glPushMatrix( );
+    g_quadtree.Scale( 8.0f, 5.0f, 8.0f );
+    g_quadtree.Render( );
     glPopMatrix( );
     
     //render da esfera
@@ -66,7 +98,7 @@ void init(void){
     //lightInit();
     
     // fog
-    GLfloat fogColor[] = { 0.8, 0.8, 0.8, 0.5};
+   /* GLfloat fogColor[] = { 0.1, 0.1, 0.1, 0.5};
     glEnable(GL_FOG);
     {
     glFogi (GL_FOG_MODE, GL_LINEAR);
@@ -76,12 +108,13 @@ void init(void){
     glFogf(GL_FOG_END, 2010);
     glHint (GL_FOG_HINT, GL_FASTEST);
     glFogi(GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH);
-}
+}*/
     //esconder partes de entidades não visíveis
     glEnable(GL_DEPTH_TEST);
     
-    //load the height map in
-    g_bruteForce.MakeTerrainPlasma(256, 1.0f );
+    /*
+    
+    g_bruteForce.MakeTerrainPlasma(256, 1.2f );
     g_bruteForce.SetHeightScale( 0.25f );
     
     //set the terrain's lighting system up
@@ -109,6 +142,45 @@ void init(void){
     g_bruteForce.GenerateTextureMap( 256 );
     g_bruteForce.DoTextureMapping( g_bTexture );
     g_bruteForce.DoMultitexturing(true);
+    
+    */
+    
+    //load the height map in
+    g_quadtree.MakeTerrainFault( 513, 64, 0, 255, 0.25f );
+    g_quadtree.SetHeightScale( 1.5f );
+    
+    //set the terrain's lighting system up
+    g_quadtree.SetLightingType( SLOPE_LIGHT );
+    g_quadtree.SetLightColor( CVECTOR( 1.0f, 1.0f, 1.0f ) );
+    g_quadtree.CustomizeSlopeLighting( 1, 1, 0.1f, 0.9f, 5 );
+    g_quadtree.CalculateLighting( );
+    
+    //load the various terrain tiles
+    char file_image1[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowestTile.tga" };
+    g_quadtree.LoadTile( LOWEST_TILE,  file_image1 );
+     char file_image2[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowTile.tga" };
+    g_quadtree.LoadTile( LOW_TILE,  file_image2 );
+     char file_image3[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/highTile.tga" };
+    g_quadtree.LoadTile( HIGH_TILE,  file_image3);
+     char file_image4[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/highestTile.tga" };
+    g_quadtree.LoadTile( HIGHEST_TILE, file_image4 );
+    
+    //load the terrain's detail map
+     char file_image5[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/detailMap.tga" };
+    g_quadtree.LoadDetailMap( file_image5 );
+    g_quadtree.DoDetailMapping( g_bDetail, 16 );
+    
+    //make the texture map, and then save it
+    g_quadtree.GenerateTextureMap( 256 );
+    g_quadtree.DoTextureMapping( g_bTexture );
+    g_quadtree.DoMultitexturing( true );
+    
+    //initiate the geomipmapping system
+    g_quadtree.SetDetailLevel( g_fDetailLevel );
+    g_quadtree.SetMinResolution( g_fMinResolution );
+    
+    g_quadtree.Init( );
+    
 }
 
 void reshape(int w, int h){
@@ -145,14 +217,18 @@ void selectColor(int item){
 
 void menu(int item){
     if(item == 1){
-        g_bruteForce.UnloadHeightMap();
+//g_bruteForce.UnloadTexture();
+       // g_bruteForce.UnloadLightMap();
+      //  g_bruteForce.UnloadHeightMap();
+     //   g_bruteForce.UnloadAllTiles();
+        g_quadtree.UnloadAllTiles( );
+        g_quadtree.UnloadTexture( );
+        g_quadtree.UnloadHeightMap( );
+        g_quadtree.Shutdown( );
         exit(0);
     }
 }
 
-void unloadHeightMap(){
- g_bruteForce.UnloadHeightMap( );
-}
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);

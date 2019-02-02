@@ -13,14 +13,16 @@
 using namespace std;
 
 //definição das variáveis
-GLfloat esferaX = 3000.0, esferaY = 1200.0, esferaZ = 2000.0;
+GLfloat esferaX = 500, esferaY = 500, esferaZ = 500;
 GLfloat cameraX = esferaX + 3.0, cameraY = esferaY + 5.0 , cameraZ = esferaZ + 5.0;
+
 
 void desenhaEsfera(GLfloat x, GLfloat y, GLfloat z){
     glPushMatrix();
     glTranslatef(x, y, z);
     glutSolidSphere(1, 10, 10);
-  //  cout << "Posição esfera " << esferaX <<" " << esferaY << " " << esferaZ <<endl;
+   // cout << "Posição esfera " << esferaX <<" " << esferaY << " " << esferaZ <<endl;
+    // cout << "Posição camera " << cameraX <<" " << cameraY << " " << cameraZ <<endl;
     glPopMatrix();
 }
 
@@ -32,7 +34,7 @@ void Specialkey(int key, int x, int y)
         case GLUT_KEY_UP:
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
-            esferaY += 20.0;
+           esferaY += 20.0;
             cameraY += 20.0;
             gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
             break;

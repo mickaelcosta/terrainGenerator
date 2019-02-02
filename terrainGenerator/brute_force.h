@@ -17,6 +17,7 @@
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 #include "terrain.h"
+#include "keyboard.hpp"
 
 
 //--------------------------------------------------------------
@@ -31,7 +32,7 @@ class CBRUTE_FORCE : public CTERRAIN
 	
 	public:
 
-	
+    
 	void Render( void );
 
 
@@ -40,5 +41,4 @@ class CBRUTE_FORCE : public CTERRAIN
 	~CBRUTE_FORCE( void )
 	{	}
 };
-
 #endif	//__BRUTE_FORCE_H__
