@@ -55,7 +55,7 @@ bool g_bTexture= true;
 bool g_bDetail = true;
 float g_fDetailLevel  = 50.0f;
 float g_fMinResolution= 10.0f;
-GLfloat alturaColisao, offset = 10.0f, offset_camera_player = 10.0f;
+GLfloat alturaColisao, offset = 10.0f, offset_camera_player = 20.0f;
 GLfloat esferaX = 129.0f, esferaY, esferaZ = 519.0f;
 GLfloat cameraX = esferaX - 1.0, cameraY , cameraZ = esferaZ - 5.0;
 
@@ -177,20 +177,23 @@ void init(void){
     //lightInit();
     
     // fog
-    GLfloat fogColor[] = { 0.2, 0.3, 0.7, 0.1};
-    glEnable(GL_FOG);
-    {
+    GLfloat fogColor[] = { 0.9f, 0.9f, 0.9f, 1.0f};
     glFogi (GL_FOG_MODE, GL_LINEAR);
     glFogfv (GL_FOG_COLOR, fogColor);
-    glFogf (GL_FOG_DENSITY, 0.35);
-    glFogf(GL_FOG_START, 1024);
-    glFogf(GL_FOG_END, 1040);
-    glHint (GL_FOG_HINT, GL_FASTEST);
-    glFogi(GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH);
-    }
+    glFogf( GL_FOG_DENSITY, 1.0f );
+    //glFogf( GL_FOG_START, 100.0f );
+    //glFogf( GL_FOG_END, 1000.0f );
+    //glHint (GL_FOG_HINT, GL_FASTEST);
+    //glFogi(GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH);
+    glFogf( GL_FOG_START, 50.0f );            //set the starting depth to 0
+    glFogf( GL_FOG_END, 200.0f );            //set the fog's depth to 150 world units
+    glHint (GL_FOG_HINT, GL_NICEST);
+    glFogi( GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT );
+    glEnable(GL_FOG);
+    
     //esconder partes de entidades não visíveis
     glEnable(GL_DEPTH_TEST);
-    
+
     /*
      //-------Forca bruta---------------------------------------------------------------
     g_bruteForce.MakeTerrainPlasma(256, 1.2f );
