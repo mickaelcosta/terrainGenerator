@@ -7,17 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE1C9DFB2204C2D2001BC29D /* math_ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE1C9DF72204C2D1001BC29D /* math_ops.cpp */; };
 		CE1C9DFF22052DF1001BC29D /* quadtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE1C9DFD22052DF0001BC29D /* quadtree.cpp */; };
-		CE239DCF2206778D00986130 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DCC2206778C00986130 /* camera.cpp */; };
 		CE239DD02206778D00986130 /* ROAM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DCE2206778D00986130 /* ROAM.cpp */; };
+		CE239DD722071BF200986130 /* water.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DD522071BF200986130 /* water.cpp */; };
+		CE239DDA2207263F00986130 /* skybox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DD82207263E00986130 /* skybox.cpp */; };
+		CE239DE72207335C00986130 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DE12207335B00986130 /* camera.cpp */; };
+		CE239DE82207335C00986130 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DE32207335C00986130 /* image.cpp */; };
+		CE239DE92207335C00986130 /* math_ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DE52207335C00986130 /* math_ops.cpp */; };
+		CE239DEC2207345100986130 /* skydome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DEB2207345100986130 /* skydome.cpp */; };
 		CEB99E5321F133D0008AF8CB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E5221F133D0008AF8CB /* main.cpp */; };
 		CEB99E5B21F14F37008AF8CB /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5A21F14F37008AF8CB /* GLUT.framework */; };
 		CEB99E5D21F14F3E008AF8CB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5C21F14F3D008AF8CB /* OpenGL.framework */; };
 		CEB99E6521F1561A008AF8CB /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6121F1561A008AF8CB /* light.cpp */; };
 		CEB99E7021F3A38B008AF8CB /* terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6D21F3A38B008AF8CB /* terrain.cpp */; };
 		CEB99E7121F3A38B008AF8CB /* brute_force.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */; };
-		CEB99E7621F4E830008AF8CB /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E7521F4E82F008AF8CB /* image.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,16 +36,23 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		CE1C9DF62204C2D0001BC29D /* glext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glext.h; sourceTree = "<group>"; };
-		CE1C9DF72204C2D1001BC29D /* math_ops.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math_ops.cpp; sourceTree = "<group>"; };
-		CE1C9DF82204C2D1001BC29D /* math_ops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = math_ops.h; sourceTree = "<group>"; };
 		CE1C9DFD22052DF0001BC29D /* quadtree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = quadtree.cpp; sourceTree = "<group>"; };
 		CE1C9DFE22052DF0001BC29D /* quadtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quadtree.h; sourceTree = "<group>"; };
 		CE1C9E0022053B43001BC29D /* mickael.raw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mickael.raw; sourceTree = "<group>"; };
-		CE239DCB2206778C00986130 /* ROAM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROAM.h; sourceTree = "<group>"; };
-		CE239DCC2206778C00986130 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
-		CE239DCD2206778C00986130 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
 		CE239DCE2206778D00986130 /* ROAM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROAM.cpp; sourceTree = "<group>"; };
+		CE239DD12206936D00986130 /* ROAM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ROAM.h; sourceTree = "<group>"; };
+		CE239DD522071BF200986130 /* water.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = water.cpp; sourceTree = "<group>"; };
+		CE239DD622071BF200986130 /* water.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = water.h; sourceTree = "<group>"; };
+		CE239DD82207263E00986130 /* skybox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = skybox.cpp; sourceTree = "<group>"; };
+		CE239DD92207263F00986130 /* skybox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = skybox.h; sourceTree = "<group>"; };
+		CE239DE12207335B00986130 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
+		CE239DE22207335C00986130 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
+		CE239DE32207335C00986130 /* image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
+		CE239DE42207335C00986130 /* math_ops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = math_ops.h; sourceTree = "<group>"; };
+		CE239DE52207335C00986130 /* math_ops.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math_ops.cpp; sourceTree = "<group>"; };
+		CE239DE62207335C00986130 /* image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = image.h; sourceTree = "<group>"; };
+		CE239DEA2207345000986130 /* skydome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = skydome.h; sourceTree = "<group>"; };
+		CE239DEB2207345100986130 /* skydome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = skydome.cpp; sourceTree = "<group>"; };
 		CEB99E4F21F133D0008AF8CB /* terrainGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = terrainGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB99E5221F133D0008AF8CB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		CEB99E5A21F14F37008AF8CB /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -55,8 +65,6 @@
 		CEB99E6F21F3A38B008AF8CB /* brute_force.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = brute_force.h; sourceTree = "<group>"; };
 		CEB99E7221F3AD67008AF8CB /* height128.raw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = height128.raw; sourceTree = "<group>"; };
 		CEB99E7321F4E185008AF8CB /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
-		CEB99E7521F4E82F008AF8CB /* image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
-		CEB99E7721F4E832008AF8CB /* image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = image.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +80,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE239DE02207331900986130 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				CE239DE12207335B00986130 /* camera.cpp */,
+				CE239DE22207335C00986130 /* camera.h */,
+				CE239DE32207335C00986130 /* image.cpp */,
+				CE239DE62207335C00986130 /* image.h */,
+				CE239DE52207335C00986130 /* math_ops.cpp */,
+				CE239DE42207335C00986130 /* math_ops.h */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
 		CEB99E4621F133D0008AF8CB = {
 			isa = PBXGroup;
 			children = (
@@ -92,21 +113,21 @@
 		CEB99E5121F133D0008AF8CB /* terrainGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				CE239DCC2206778C00986130 /* camera.cpp */,
-				CE239DCD2206778C00986130 /* camera.h */,
-				CE239DCE2206778D00986130 /* ROAM.cpp */,
-				CE239DCB2206778C00986130 /* ROAM.h */,
+				CE239DE02207331900986130 /* util */,
 				CEB99E7321F4E185008AF8CB /* data */,
+				CE239DEB2207345100986130 /* skydome.cpp */,
+				CE239DEA2207345000986130 /* skydome.h */,
+				CE239DD82207263E00986130 /* skybox.cpp */,
+				CE239DD92207263F00986130 /* skybox.h */,
+				CE239DD522071BF200986130 /* water.cpp */,
+				CE239DD622071BF200986130 /* water.h */,
+				CE239DCE2206778D00986130 /* ROAM.cpp */,
+				CE239DD12206936D00986130 /* ROAM.h */,
 				CE1C9E0022053B43001BC29D /* mickael.raw */,
 				CE1C9DFD22052DF0001BC29D /* quadtree.cpp */,
 				CE1C9DFE22052DF0001BC29D /* quadtree.h */,
 				CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */,
 				CEB99E6F21F3A38B008AF8CB /* brute_force.h */,
-				CE1C9DF62204C2D0001BC29D /* glext.h */,
-				CE1C9DF72204C2D1001BC29D /* math_ops.cpp */,
-				CE1C9DF82204C2D1001BC29D /* math_ops.h */,
-				CEB99E7521F4E82F008AF8CB /* image.cpp */,
-				CEB99E7721F4E832008AF8CB /* image.h */,
 				CEB99E7221F3AD67008AF8CB /* height128.raw */,
 				CEB99E6D21F3A38B008AF8CB /* terrain.cpp */,
 				CEB99E6C21F3A38A008AF8CB /* terrain.h */,
@@ -182,15 +203,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE239DEC2207345100986130 /* skydome.cpp in Sources */,
 				CE1C9DFF22052DF1001BC29D /* quadtree.cpp in Sources */,
-				CE1C9DFB2204C2D2001BC29D /* math_ops.cpp in Sources */,
 				CEB99E5321F133D0008AF8CB /* main.cpp in Sources */,
 				CEB99E7021F3A38B008AF8CB /* terrain.cpp in Sources */,
+				CE239DDA2207263F00986130 /* skybox.cpp in Sources */,
+				CE239DE72207335C00986130 /* camera.cpp in Sources */,
 				CE239DD02206778D00986130 /* ROAM.cpp in Sources */,
-				CE239DCF2206778D00986130 /* camera.cpp in Sources */,
 				CEB99E7121F3A38B008AF8CB /* brute_force.cpp in Sources */,
+				CE239DE82207335C00986130 /* image.cpp in Sources */,
+				CE239DE92207335C00986130 /* math_ops.cpp in Sources */,
+				CE239DD722071BF200986130 /* water.cpp in Sources */,
 				CEB99E6521F1561A008AF8CB /* light.cpp in Sources */,
-				CEB99E7621F4E830008AF8CB /* image.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +339,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y86D2CJ9J2;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				HEADER_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -326,6 +352,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y86D2CJ9J2;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				HEADER_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

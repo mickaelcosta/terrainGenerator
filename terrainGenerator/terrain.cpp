@@ -18,7 +18,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
-
 #include "terrain.h"
 
 using namespace std;
