@@ -16,11 +16,9 @@
 //--------------------------------------------------------------
 #include <stdio.h>
 #include <iostream>
-#include <cmath>
 #include "quadtree.h"
 
 #define MAX( a, b )  ( ( ( a )<( b ) )?( b ):( a ) )
-
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 //- GLOBALS ----------------------------------------------------
@@ -65,11 +63,11 @@ bool CQUADTREE::Init( void )
 		}
 	}
 
-	//propagate the roughness in the height map (so we can apply more triangles in rough spots of terrain)
+	//propogate the roughness in the height map (so we can apply more triangles in rough spots of terrain)
 	PropagateRoughness( );
 
 	//intialization was a success
-    std::cout << "The quadtree terrain engine has been successfully initialized\n" ;
+	std::cout << "The quadtree terrain engine has been successfully initialized\n";
 	return true;
 }
 
@@ -92,9 +90,11 @@ void CQUADTREE::Shutdown( void )
 // Arguments:		-camera: a camera object
 // Return Value:	None
 //--------------------------------------------------------------
-void CQUADTREE::Update( void )
+void CQUADTREE::Update( CCAMERA* pCamera )
 {
 	float fCenter;
+
+	m_pCamera= pCamera;
 
 	//calculate the center of the terrain mesh
 	fCenter= ( m_iSize-1 )/2.0f;
@@ -112,7 +112,6 @@ void CQUADTREE::Update( void )
 void CQUADTREE::Render( void )
 {
 	float fCenter;
-
 
 	//calculate the center of the mesh
 	fCenter= ( m_iSize-1 )/2.0f;
@@ -213,10 +212,10 @@ void CQUADTREE::PropagateRoughness( void )
 	while( iEdgeLength<=m_iSize )
 	{
 		//offset of node edges (since all edges are the same length
-		iEdgeOffset= ( iEdgeLength-1 )>>1;
+		iEdgeOffset= ( iEdgeLength-1 )/2;
 
 		//offset of the node's children's edges
-		iChildOffset= ( iEdgeLength-1 )>>2;
+		iChildOffset = ( iEdgeLength-1 )/4;
 
 		for( z=iEdgeOffset; z<m_iSize; z+=( iEdgeLength-1 ) )
 		{
@@ -225,40 +224,45 @@ void CQUADTREE::PropagateRoughness( void )
 				//compute "iLocalD2" values for this node
 				//upper-mid
 				iLocalD2= ( int )ceil( abs( ( ( GetTrueHeightAtPoint( x-iEdgeOffset, z+iEdgeOffset )+
-											    GetTrueHeightAtPoint( x+iEdgeOffset, z+iEdgeOffset ) )>>1 )-
-											    GetTrueHeightAtPoint( x,			z+iEdgeOffset ) ) );
+											   GetTrueHeightAtPoint( x+iEdgeOffset, z+iEdgeOffset ) )/2 )-
+											   GetTrueHeightAtPoint( x,			z+iEdgeOffset ) ) );
 
 				//right-mid
 				iDH= ( int )ceil( abs( ( ( GetTrueHeightAtPoint( x+iEdgeOffset, z+iEdgeOffset )+
-										   GetTrueHeightAtPoint( x+iEdgeOffset, z-iEdgeOffset ) )>>1 )-
-										   GetTrueHeightAtPoint( x+iEdgeOffset, z ) ) );
-                iLocalD2= MAX( iLocalD2, iDH );
+										  GetTrueHeightAtPoint( x+iEdgeOffset, z-iEdgeOffset ) )/2 )-
+										  GetTrueHeightAtPoint( x+iEdgeOffset, z ) ) );
+				iLocalD2= MAX( iLocalD2, iDH );
 
 				//bottom-mid
 				iDH= ( int )ceil( abs( ( ( GetTrueHeightAtPoint( x-iEdgeOffset, z-iEdgeOffset )+
-										   GetTrueHeightAtPoint( x+iEdgeOffset, z-iEdgeOffset ) )>>1 )-
-										   GetTrueHeightAtPoint( x,		   z-iEdgeOffset ) ) );
-                iLocalD2= MAX( iLocalD2, iDH );
+										  GetTrueHeightAtPoint( x+iEdgeOffset, z-iEdgeOffset ) )/2 )-
+										  GetTrueHeightAtPoint( x,		   z-iEdgeOffset ) ) );
+				iLocalD2= MAX( iLocalD2, iDH );
 
 				//left-mid
 				iDH= ( int )ceil( abs( ( ( GetTrueHeightAtPoint( x-iEdgeOffset, z+iEdgeOffset )+
-										   GetTrueHeightAtPoint( x-iEdgeOffset, z-iEdgeOffset ) )>>1 )-
-										   GetTrueHeightAtPoint( x-iEdgeOffset, z ) ) );
-                iLocalD2= MAX( iLocalD2, iDH );
+										  GetTrueHeightAtPoint( x-iEdgeOffset, z-iEdgeOffset ) )/2 )-
+										  GetTrueHeightAtPoint( x-iEdgeOffset, z ) ) );
+				iLocalD2= MAX( iLocalD2, iDH );
 
 	 			//bottom-left to top-right diagonal
 				iDH= ( int )ceil( abs( ( ( GetTrueHeightAtPoint( x-iEdgeOffset, z-iEdgeOffset )+
-										   GetTrueHeightAtPoint( x+iEdgeOffset, z+iEdgeOffset ) )>>1 )-
-										   GetTrueHeightAtPoint( x,		   z ) ) );
-                iLocalD2= MAX( iLocalD2, iDH );
+										  GetTrueHeightAtPoint( x+iEdgeOffset, z+iEdgeOffset ) )/2 )-
+										  GetTrueHeightAtPoint( x,		   z ) ) );
+				iLocalD2= MAX( iLocalD2, iDH );
 
 				//bottom-right to top-left diagonal
 				iDH= ( int )ceil( abs( ( ( GetTrueHeightAtPoint( x+iEdgeOffset, z-iEdgeOffset )+
-										   GetTrueHeightAtPoint( x-iEdgeOffset, z+iEdgeOffset ) )>>1 )-
-										   GetTrueHeightAtPoint( x, z ) ) );
-                iLocalD2= MAX( iLocalD2, iDH );
+										  GetTrueHeightAtPoint( x-iEdgeOffset, z+iEdgeOffset ) )/2 )-
+										  GetTrueHeightAtPoint( x, z ) ) );
+				iLocalD2= MAX( iLocalD2, iDH );
 
-				//make iLocalD2 a value between 0-255
+				// iLocalD2 will be a value from 0 - 255.
+				// Dividing by d:
+				// 	d ranges from 3 to m_iSize.
+				// 	Upper bound: 255 / 3 = 85
+				//	Lower bound: 0
+				//	Extra precision if iD2 multiplied by 3.
 				iLocalD2= ( int )ceil( ( iLocalD2*3.0f )/iEdgeLength );
 
 				//test minimally sized block
@@ -277,7 +281,7 @@ void CQUADTREE::PropagateRoughness( void )
 					iLocalH= MAX( iLocalH, GetTrueHeightAtPoint( x+iEdgeOffset, z-iEdgeOffset ) );
 
 					//bottom mid
-					iLocalH= MAX( iLocalH, GetTrueHeightAtPoint( x,	z-iEdgeOffset ) );
+					iLocalH= MAX( iLocalH, GetTrueHeightAtPoint( x,		  z-iEdgeOffset ) );
 
 					//lower left
 					iLocalH= MAX( iLocalH, GetTrueHeightAtPoint( x-iEdgeOffset, z-iEdgeOffset ) );
@@ -289,10 +293,10 @@ void CQUADTREE::PropagateRoughness( void )
 					iLocalH= MAX( iLocalH, GetTrueHeightAtPoint( x-iEdgeOffset, z+iEdgeOffset ) );
 
 					//upper mid
-					iLocalH= MAX( iLocalH, GetTrueHeightAtPoint( x, z+iEdgeOffset ) );
+					iLocalH= MAX( iLocalH, GetTrueHeightAtPoint( x,		  z+iEdgeOffset ) );
 
 					//center
-					iLocalH= MAX( iLocalH, GetTrueHeightAtPoint( x,	z ) );
+					iLocalH= MAX( iLocalH, GetTrueHeightAtPoint( x,		  z ) );
 
 					//store the maximum iLocalH value in the matrix
 					m_ucpQuadMtrx[GetMatrixIndex( x+1, z )]= iLocalH;
@@ -303,11 +307,11 @@ void CQUADTREE::PropagateRoughness( void )
 					fKUpperBound= 1.0f*m_fMinResolution/( 2.0f*( m_fMinResolution-1.0f ) );
 
 					//use d2 values from farther up on the quadtree
-					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x, z ),			    ( float )iLocalD2 ) );
-					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x-iEdgeOffset, z ), ( float )iD2 ) );
-					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x+iEdgeOffset, z ),	( float )iD2 ) );
-					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x, z+iEdgeOffset ), ( float )iD2 ) );
-					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x, z-iEdgeOffset ), ( float )iD2 ) );
+					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x,		   z ),			( float )iLocalD2 ) );
+					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x-iEdgeOffset, z ),			( float )iD2 ) );
+					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x+iEdgeOffset, z ),			( float )iD2 ) );
+					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x,		   z+iEdgeOffset ), ( float )iD2 ) );
+					iD2= ( int )ceil( MAX( fKUpperBound*( float )GetQuadMatrixData( x,		   z-iEdgeOffset ), ( float )iD2 ) );
 
 					//get the max local height values of the 4 nodes (LL, LR, UL, UR)
 					iLocalH= GetTrueHeightAtPoint( x+iChildOffset, z+iChildOffset );
@@ -350,12 +354,24 @@ void CQUADTREE::RefineNode( float x, float z, int iEdgeLength )
 	float fChildOffset;
 	int iChildEdgeLength;
 	int iBlend;
+			
+	//test the node's bounding box against the view frustm
+	if( !m_pCamera->CubeFrustumTest( x*m_vecScale[0], 
+									 GetScaledHeightAtPoint( ( int  )x, ( int )z ), 
+									 z*m_vecScale[2], 
+									 iEdgeLength*m_vecScale[0] ) )
+	{
+		//disable this node, and return (since the parent node is disabled, we don't need
+		//to waste any CPU cycles by traversing down the tree even farther
+		m_ucpQuadMtrx[GetMatrixIndex( ( int )x, ( int )z )]= 0;
+		return;
+	}
 
 	//calculate the distance from the current point (L1 NORM, which, essentially, is a faster version of the 
 	//normal distance equation you may be used to... yet again, thanks to Chris Cookson)
-	fViewDistance= ( float )( fabs( cameraX-( x*m_vecScale[0] ) )+
-							  fabs(cameraY-GetQuadMatrixData( ( int )x+1, ( int )z ) )+
-							  fabs( cameraZ-( z*m_vecScale[2] ) ) );
+	fViewDistance= ( float )( fabs( m_pCamera->m_vecEyePos[0]-( x*m_vecScale[0] ) )+
+							  fabs( m_pCamera->m_vecEyePos[1]-GetQuadMatrixData( ( int )x+1, ( int )z ) )+
+							  fabs( m_pCamera->m_vecEyePos[2]-( z*m_vecScale[2] ) ) );
 
 
 	//compute the 'f' value (as stated in Rottger's whitepaper of this algorithm)
@@ -370,10 +386,15 @@ void CQUADTREE::RefineNode( float x, float z, int iEdgeLength )
 	//store the blend factor in the quadtree matrix
 	m_ucpQuadMtrx[GetMatrixIndex( ( int )x, ( int )z )]= iBlend;
 
-	if( iBlend )
+	if( iBlend!=0 )
 	{
+		//check to see if we're at the smallest possible node length, if so
+		//no more refining needs to be done
+		if( iEdgeLength<=3 )
+			return;
+	
 		//else, we need to recurse down farther into the quadtree
-		if( !( iEdgeLength<=3 ) )
+		else
 		{
 			fChildOffset    = ( float )( ( iEdgeLength-1 ) >> 2 );
 			iChildEdgeLength= ( iEdgeLength+1 ) >> 1;
@@ -390,8 +411,12 @@ void CQUADTREE::RefineNode( float x, float z, int iEdgeLength )
 
 			//upper right
 			RefineNode( x+fChildOffset, z+fChildOffset, iChildEdgeLength );
+			return;
 		}
 	} 
+	
+	else
+		return;
 }
 
 //--------------------------------------------------------------
@@ -420,6 +445,10 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 
 	iX= ( int )x;
 	iZ= ( int )z;
+
+	//if this node is disabled, do not render it
+	if( GetQuadMatrixData( iX, iZ )==0 )
+		return;
 
 	//compute the edge offset of the current node
 	iEdgeOffset= ( iEdgeLength-1 )/2;
@@ -473,7 +502,7 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 				if( ( ( iZ-iAdjOffset )<0 ) || GetQuadMatrixData( iX, iZ-iAdjOffset )!=0 )
 				{
 					RenderVertex( x, z-fEdgeOffset, fMidX, fTexBottom, bMultiTex );
-					
+				
 				}
 
 				//bottom right vertex
@@ -489,13 +518,13 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 
 				//upper right vertex
 				RenderVertex( x+fEdgeOffset, z+fEdgeOffset, fTexRight, fTexTop, bMultiTex );
-			
+				
 
 				//upper mid, skip if the adjacent node is of a lower detail level
 				if( ( ( iZ+iAdjOffset )>=m_iSize ) || GetQuadMatrixData( iX, iZ+iAdjOffset )!=0 )
 				{
 					RenderVertex( x, z+fEdgeOffset, fMidX, fTexTop, bMultiTex );
-				
+					
 				}
 
 				//upper left vertex
@@ -506,12 +535,12 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 				if( ( ( iX-iAdjOffset )<0 ) || GetQuadMatrixData( iX-iAdjOffset, iZ )!=0 )
 				{
 					RenderVertex( x-fEdgeOffset, z, fTexLeft, fMidZ, bMultiTex );
-					
+				
 				}
 
 				//bottom left vertex again
 				RenderVertex( x-fEdgeOffset, z-fEdgeOffset, fTexLeft, fTexBottom, bMultiTex );
-				
+			
 			glEnd( );
 			return;
 
@@ -575,7 +604,7 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 
 					//upper mid vertex
 					RenderVertex( x, z+fEdgeOffset, fMidX, fTexTop, bMultiTex );
-					
+				
 				glEnd( );
 
 				//lower left fan
@@ -588,7 +617,7 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 
 					//bottom left
 					RenderVertex( x-fEdgeOffset, z-fEdgeOffset, fTexLeft, fTexBottom, bMultiTex );
-					
+				
 
 					//bottom mid
 					RenderVertex( x, z-fEdgeOffset, fMidX, fTexBottom, bMultiTex );
@@ -659,44 +688,45 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 					if( ( ( iZ-iAdjOffset )<0 ) || GetQuadMatrixData( iX, iZ-iAdjOffset )!=0 )
 					{
 						RenderVertex( x, z-fEdgeOffset, fMidX, fTexBottom, bMultiTex );
-				
+						
 					}
 
 					//lower right vertex
 					RenderVertex( x+fEdgeOffset, z-fEdgeOffset, fTexRight, fTexBottom, bMultiTex );
-				
+					
 
 					//right mid, skip if the adjacent node is of a lower detail level
 					if( ( ( iX+iAdjOffset )>=m_iSize ) || GetQuadMatrixData( iX+iAdjOffset, iZ )!=0 )
 					{
 						RenderVertex( x+fEdgeOffset, z, fTexRight, fMidZ, bMultiTex );
-            
+						
 					}
 
 					//upper right vertex
 					RenderVertex( x+fEdgeOffset, z+fEdgeOffset, fTexRight, fTexTop, bMultiTex );
-				
+					
 
 					//upper mid, skip if the adjacent node is of a lower detail level
 					if( ( ( iZ+iAdjOffset )>=m_iSize ) || GetQuadMatrixData( iX, iZ+iAdjOffset )!=0 )
 					{
 						RenderVertex( x, z+fEdgeOffset, fMidX, fTexTop, bMultiTex );
-					
+						
 					}
 
 					//upper left
 					RenderVertex( x-fEdgeOffset, z+fEdgeOffset, fTexLeft, fTexTop, bMultiTex );
-			
+					
 
 					//left mid, skip if the adjacent node is of a lower detail level
 					if( ( ( iX-iAdjOffset )<0 ) || GetQuadMatrixData( iX-iAdjOffset, iZ )!=0 )
 					{
 						RenderVertex( x-fEdgeOffset, z, fTexLeft, fMidZ, bMultiTex );
+						
 					}
 
 					//lower left vertex
 					RenderVertex( x-fEdgeOffset, z-fEdgeOffset, fTexLeft, fTexBottom, bMultiTex );
-				
+					
 				glEnd( );
 				return;
 			}
@@ -732,13 +762,13 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 
 							//lower right vertex
 							RenderVertex( x+fEdgeOffset, z-fEdgeOffset, fTexRight, fTexBottom, bMultiTex );
-					
+							
 
 							//finish off the fan with a right mid vertex
 							if( iFanPosition==1 )
 							{
 								RenderVertex( x+fEdgeOffset, z, fTexRight, fMidZ, bMultiTex );
-						
+								
 							}
 							break;
 
@@ -748,18 +778,18 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 							if( ( ( x-iAdjOffset )<0 ) || GetQuadMatrixData( iX-iAdjOffset, iZ )!=0 || iFanPosition==iFanLength )
 							{
 								RenderVertex( x-fEdgeOffset, z, fTexLeft, fMidZ, bMultiTex );
-						
+							
 							}
 
 							//lower left vertex
 							RenderVertex( x-fEdgeOffset, z-fEdgeOffset, fTexLeft, fTexBottom, bMultiTex );
-					
+							
 
 							//finish off the fan with a lower mid vertex
 							if( iFanPosition==1 )
 							{
 								RenderVertex( x, z-fEdgeOffset, fMidX, fTexBottom, bMultiTex );
-						
+							
 							}
 							break;
 
@@ -789,18 +819,18 @@ void CQUADTREE::RenderNode( float x, float z, int iEdgeLength, bool bMultiTex, b
 							if( ( ( iX+iAdjOffset )>=m_iSize ) || GetQuadMatrixData( iX+iAdjOffset, iZ )!=0 || iFanPosition==iFanLength )
 							{
 								RenderVertex( x+fEdgeOffset, z, fTexRight, fMidZ, bMultiTex );
-						
+							
 							}
 
 							//upper right vertex
 							RenderVertex( x+fEdgeOffset, z+fEdgeOffset, fTexRight, fTexTop, bMultiTex );
-				
+						
 
 							//finish off the fan with a top mid vertex
 							if( iFanPosition==1 )
 							{
 								RenderVertex( x, z+fEdgeOffset, fMidX, fTexTop, bMultiTex );
-						
+							
 							}
 							break;
 					}

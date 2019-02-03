@@ -17,9 +17,7 @@
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 #include "terrain.h"
-#include "keyboard.hpp"
-#include <GLUT/GLUT.h>
-
+#include "camera.h"
 
 
 //--------------------------------------------------------------
@@ -59,6 +57,9 @@ class CQUADTREE : public CTERRAIN
 	private:
 		//the quadtree matrix (the underlying power of the engine)
 		unsigned char* m_ucpQuadMtrx;
+
+		//pointer to a camera object
+		CCAMERA* m_pCamera;
 
 		//detail level variables
 		float m_fDetailLevel;
@@ -109,7 +110,7 @@ class CQUADTREE : public CTERRAIN
 	bool Init( void );
 	void Shutdown( void );
 
-	void Update( void );
+	void Update( CCAMERA* pCamera );
 	void Render( void );
 
 	//--------------------------------------------------------------

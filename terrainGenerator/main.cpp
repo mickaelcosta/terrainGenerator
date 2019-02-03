@@ -13,10 +13,12 @@
 #include <iostream>
 #include <GLUT/GLUT.h>
 #include "light.hpp"
-#include "keyboard.hpp"
 #include "brute_force.h"
 #include "terrain.h"
 #include "quadtree.h"
+#include "math_ops.h"
+#include "camera.h"
+#include "ROAM.h"
 
 using namespace std;
 
@@ -29,37 +31,52 @@ enum FRACTAL_ALGORITHM
     MIDPOINT_DISPLACEMENT
 };
 
+//forca bruta
 CBRUTE_FORCE g_bruteForce;
-
+//quadtree
 CQUADTREE g_quadtree;
+//ROAM
+CCAMERA g_camera;
+CROAM g_ROAM;
 
 FRACTAL_ALGORITHM g_iFractalAlgo;
-int g_iCurrentHeightmap= 0;
+int g_iCurrentHeightmap;
+
+int g_iLevel= 45;
 
 bool g_bTexture= true;
 bool g_bDetail = true;
 float g_fDetailLevel  = 50.0f;
 float g_fMinResolution= 10.0f;
 
+GLfloat esferaX = 129.0f, esferaY = 1026.0f, esferaZ = 519.0f;
+GLfloat cameraX = esferaX - 1.0, cameraY = esferaY + 3.0 , cameraZ = esferaZ - 5.0;
 
 //-----------------------------------------
 //------ funções --------------------------
 //-----------------------------------------
 
+void desenhaEsfera(GLfloat x, GLfloat y, GLfloat z){
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glutSolidSphere(1, 10, 10);
+    cout << "Posição esfera " << esferaX <<" " << esferaY << " " << esferaZ <<endl;
+    cout << "Posição camera " << cameraX <<" " << cameraY << " " << cameraZ <<endl;
+    glPopMatrix();
+}
+
 void display(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity( );
+    //setup the viewing matrix
+    g_camera.ComputeViewMatrix( );
+    g_camera.SetViewMatrix( );
     
-    //agua
-    glBegin(GL_QUADS);
-    glColor3f(0.0 , 0.0, 1.0);
-    glVertex3d(0, 90, 0);
-    glVertex3d(0, 90, 4104);
-    glVertex3d(4104, 90, 4104);
-    glVertex3d(4104, 90, 0);
-    glEnd();
-    
+    //calculate the viewing frustum
+    g_camera.CalculateViewFrustum( );
+
     /*
-    //render the simple terrain!
+    //------------FORCA BRUTA---------------------
     g_bruteForce.DoTextureMapping( g_bTexture );
     g_bruteForce.DoDetailMapping( g_bDetail, 8 );
     glPushMatrix( );
@@ -68,23 +85,43 @@ void display(void){
     glPopMatrix( );
     */
  
-    //update the terrain
-    g_quadtree.SetDetailLevel( g_fDetailLevel );
+    //-----------QUADTREE--------------------------
+    /*g_quadtree.SetDetailLevel( g_fDetailLevel );
     g_quadtree.SetMinResolution( g_fMinResolution );
     
     g_quadtree.DoTextureMapping( g_bTexture );
     g_quadtree.DoDetailMapping( g_bDetail, 16 );
-    g_quadtree.Update( );
+    g_quadtree.Update( &g_camera );
     
     //render the simple terrain!
     glPushMatrix( );
     g_quadtree.Scale( 8.0f, 5.0f, 8.0f );
     g_quadtree.Render( );
-    glPopMatrix( );
+    glPopMatrix( );*/
     
+    //------------ROAM---------------------
+    g_ROAM.DoTextureMapping( g_bTexture );
+    g_ROAM.DoDetailMapping( g_bDetail, 16 );
+    
+    glFrontFace( GL_CW );
+    glEnable( GL_CULL_FACE );
+    
+    g_ROAM.Scale( 5.0f, 5.0f, 5.0f );
+    g_ROAM.Update( );
+    g_ROAM.Render( );
+
     //render da esfera
     desenhaEsfera(esferaX, esferaY, esferaZ);
+    //agua
     
+    glDisable( GL_CULL_FACE);
+    glBegin(GL_QUADS);
+    glColor3f(0.0 , 0.0, 1.0);
+    glVertex3d(0, 90, 0);
+    glVertex3d(0, 90, 2048);
+    glVertex3d(2048, 90, 2048);
+    glVertex3d(2048, 90, 0);
+    glEnd();
     //render
     glutSwapBuffers();
 }
@@ -98,22 +135,23 @@ void init(void){
     //lightInit();
     
     // fog
-   /* GLfloat fogColor[] = { 0.1, 0.1, 0.1, 0.5};
+    GLfloat fogColor[] = { 0.1, 0.1, 0.1, 0.5};
     glEnable(GL_FOG);
     {
     glFogi (GL_FOG_MODE, GL_LINEAR);
     glFogfv (GL_FOG_COLOR, fogColor);
     glFogf (GL_FOG_DENSITY, 0.35);
-    glFogf(GL_FOG_START, 2000);
-    glFogf(GL_FOG_END, 2010);
+    glFogf(GL_FOG_START, 4000);
+    glFogf(GL_FOG_END, 4050);
     glHint (GL_FOG_HINT, GL_FASTEST);
     glFogi(GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH);
-}*/
+    }
+    
     //esconder partes de entidades não visíveis
     glEnable(GL_DEPTH_TEST);
     
     /*
-    
+     //-------Forca bruta---------------------------------------------------------------
     g_bruteForce.MakeTerrainPlasma(256, 1.2f );
     g_bruteForce.SetHeightScale( 0.25f );
     
@@ -145,8 +183,10 @@ void init(void){
     
     */
     
+    
+    //-------QUADTREE----------------------------------------------------------------
     //load the height map in
-    g_quadtree.MakeTerrainFault( 513, 64, 0, 255, 0.25f );
+   /* g_quadtree.MakeTerrainFault( 513, 64, 0, 255, 0.25f );
     g_quadtree.SetHeightScale( 1.5f );
     
     //set the terrain's lighting system up
@@ -179,8 +219,45 @@ void init(void){
     g_quadtree.SetDetailLevel( g_fDetailLevel );
     g_quadtree.SetMinResolution( g_fMinResolution );
     
-    g_quadtree.Init( );
+    g_quadtree.Init();*/
     
+    
+    //initialize the ROAM system
+    g_ROAM.MakeTerrainPlasma( 2048, 1.5f );
+    g_ROAM.SetHeightScale( 1.0f );
+    
+    //set the terrain's lighting system up
+    g_ROAM.SetLightingType( SLOPE_LIGHT );
+    g_ROAM.SetLightColor( CVECTOR( 1.0f, 1.0f, 1.0f ) );
+    g_ROAM.CustomizeSlopeLighting( 1, 1, 0.2f, 0.9f, 7 );
+    g_ROAM.CalculateLighting( );
+    
+    //load the various terrain tiles
+    char file_image1[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowestTile.tga" };
+    g_ROAM.LoadTile( LOWEST_TILE, file_image1 );
+    char file_image2[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowTile.tga" };
+    g_ROAM.LoadTile( LOW_TILE,    file_image2);
+    char file_image3[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/highTile.tga" };
+    g_ROAM.LoadTile( HIGH_TILE,  file_image3 );
+    char file_image4[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/highestTile.tga" };
+    g_ROAM.LoadTile( HIGHEST_TILE,file_image4 );
+    //load the terrain's detail map
+    char file_image5[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/detailMap.tga" };
+    g_ROAM.LoadDetailMap( file_image5 );
+    g_ROAM.DoDetailMapping( g_bDetail, 16 );
+    
+    //make the texture map, and then save it
+    g_ROAM.GenerateTextureMap( 512 );
+    g_ROAM.DoTextureMapping( g_bTexture );
+    g_ROAM.DoMultitexturing( true );
+    
+    //initialize the ROAM system
+    g_ROAM.Init( g_iLevel, 65536, &g_camera );
+    
+    //set the camera's position
+    g_camera.SetPosition( 128.0f, 1029.0f, 514.0f );
+    g_camera.m_fYaw  += 175;
+    g_camera.m_fPitch-= 40;
 }
 
 void reshape(int w, int h){
@@ -195,7 +272,72 @@ void reshape(int w, int h){
     glMatrixMode( GL_MODELVIEW );  //Select the modelview matrix
     glLoadIdentity( );
     //posicionando a camera
-    gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
+   // gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
+}
+//implementação das funções
+void Specialkey(int key, int x, int y)
+{
+    switch(key)
+    {
+        case GLUT_KEY_UP:
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            esferaY += 20.0;
+            cameraY += 20.0;
+            g_camera.SetPosition( cameraX, cameraY, cameraZ );
+            break;
+        case GLUT_KEY_DOWN:
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            esferaY -= 20.0;
+            cameraY -= 20.0;
+           g_camera.SetPosition( cameraX, cameraY, cameraZ );
+            break;
+        case GLUT_KEY_LEFT:
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            esferaX += 20.0;
+            cameraX += 20.0;
+           g_camera.SetPosition( cameraX, cameraY, cameraZ );
+            break;
+        case GLUT_KEY_RIGHT:
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            esferaX -= 20.0;
+            cameraX -= 20.0;
+           g_camera.SetPosition( cameraX, cameraY, cameraZ );
+            break;
+    }
+    glutPostRedisplay();
+}
+
+void keyboard(unsigned char key, int x, int y)
+{
+    switch (key) {
+        case 'z':
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            esferaZ += 20.0;
+            cameraZ += 20.0;
+           g_camera.SetPosition( cameraX, cameraY, cameraZ );
+            break;
+        case 'Z':
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            esferaZ -= 20.0;
+            cameraZ -= 20.0;
+           g_camera.SetPosition( cameraX, cameraY, cameraZ );
+            break;
+        case 'p':
+           g_camera.m_fPitch-= 5;
+            break;
+        case 'P':
+           g_camera.m_fPitch+= 5;
+            break;
+        default:
+            break;
+    }
+    glutPostRedisplay();
 }
 
 void selectColor(int item){
@@ -215,16 +357,37 @@ void selectColor(int item){
     glutPostRedisplay();
 }
 
+void mouse(int button, int state, int x, int y)
+{
+    if(state == GLUT_DOWN){
+        switch (button) {
+            case GLUT_LEFT_BUTTON:
+               g_camera.m_fYaw  += 5;
+                break;
+            case GLUT_MIDDLE_BUTTON:
+                g_camera.m_fYaw  -= 5;
+                break;
+            default:
+                break;
+        }
+    }
+    glutPostRedisplay();
+}
+
 void menu(int item){
     if(item == 1){
-//g_bruteForce.UnloadTexture();
-       // g_bruteForce.UnloadLightMap();
-      //  g_bruteForce.UnloadHeightMap();
-     //   g_bruteForce.UnloadAllTiles();
-        g_quadtree.UnloadAllTiles( );
-        g_quadtree.UnloadTexture( );
-        g_quadtree.UnloadHeightMap( );
-        g_quadtree.Shutdown( );
+       //g_bruteForce.UnloadTexture();
+       //g_bruteForce.UnloadLightMap();
+       //g_bruteForce.UnloadHeightMap();
+       //g_bruteForce.UnloadAllTiles();
+       //g_quadtree.UnloadAllTiles( );
+       // g_quadtree.UnloadTexture( );
+       // g_quadtree.UnloadHeightMap( );
+       // g_quadtree.Shutdown( );
+        g_ROAM.Shutdown( );
+        g_ROAM.UnloadAllTiles( );
+        g_ROAM.UnloadTexture( );
+        g_ROAM.UnloadHeightMap( );
         exit(0);
     }
 }
@@ -238,6 +401,7 @@ int main(int argc, char** argv) {
     glutCreateWindow("Terrain Renderer");
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
+    glutMouseFunc(mouse);
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(Specialkey);
     
