@@ -2,17 +2,13 @@
 //  terrainGenerator
 //  Created by User on 17/01/19.
 //  Copyright © 2019 mickael. All rights reserved.
-//  main.cpp
-//  Created by User on 26/11/18.
-//  Copyright © 2018 mickael. All rights reserved.
-
+//  Estudo sobre renderização de terrenos em OpenGL e c++
 
 //----------------------------------------
 //------------- Includes -----------------
 //----------------------------------------
 #include <iostream>
 #include <GLUT/GLUT.h>
-#include "light.hpp"
 #include "brute_force.h"
 #include "terrain.h"
 #include "quadtree.h"
@@ -33,7 +29,7 @@ enum FRACTAL_ALGORITHM
     FAULT_FORMATION= 0,
     MIDPOINT_DISPLACEMENT
 };
-
+FRACTAL_ALGORITHM g_iFractalAlgo;
 //forca bruta
 CBRUTE_FORCE g_bruteForce;
 //quadtree
@@ -48,7 +44,6 @@ CSKYBOX g_skybox;
 //skydome
 CSKYDOME g_skydome;
 
-FRACTAL_ALGORITHM g_iFractalAlgo;
 int g_iCurrentHeightmap;
 int g_iLevel= 45;
 bool g_bTexture= true;
@@ -67,8 +62,6 @@ void desenhaEsfera(GLfloat x, GLfloat y, GLfloat z){
     glPushMatrix();
     glTranslatef(x, y, z);
     glutSolidSphere(1, 10, 10);
-    cout << "Posição esfera " << esferaX <<" " << esferaY << " " << esferaZ <<endl;
-    cout << "Posição camera " << cameraX <<" " << cameraY << " " << cameraZ <<endl;
     glPopMatrix();
 }
 
@@ -78,10 +71,7 @@ void display(void){
     //setup the viewing matrix
     g_camera.ComputeViewMatrix( );
     g_camera.SetViewMatrix( );
-    
-    //calculate the viewing frustum
     g_camera.CalculateViewFrustum( );
-
     /*
     //------------FORCA BRUTA---------------------
     g_bruteForce.DoTextureMapping( g_bTexture );
@@ -109,23 +99,19 @@ void display(void){
     //------------ROAM---------------------
     g_ROAM.DoTextureMapping( g_bTexture );
     g_ROAM.DoDetailMapping( g_bDetail, 16 );
-    
-
     glDisable( GL_CULL_FACE );
     glDisable( GL_DEPTH_TEST );
     glDepthMask( GL_FALSE );
-       //skybox
-   // g_skybox.Set( cameraX, cameraY, cameraZ, 1024.0f );
-   // g_skybox.Render( );
+    //skybox
+    // g_skybox.Set( cameraX, cameraY, cameraZ, 1024.0f );
+    // g_skybox.Render( );
     //skydome
     g_skydome.Set( g_camera.m_vecEyePos[0], g_camera.m_vecEyePos[1]-400.0f, g_camera.m_vecEyePos[2] );
     g_skydome.Render( 0.009f, true );
     glDepthMask( GL_TRUE );
     glEnable( GL_DEPTH_TEST );
-    
     //render the simple terrain!
     g_ROAM.DoTextureMapping( true );
-    
     glFrontFace( GL_CW );
     glEnable( GL_CULL_FACE );
     g_ROAM.Scale( 5.0f, 5.0f, 5.0f );
@@ -154,41 +140,23 @@ void display(void){
     desenhaEsfera(esferaX, esferaY, esferaZ);
     glPopMatrix();
    
-    /*
-    glDisable( GL_CULL_FACE);
-    glBegin(GL_QUADS);
-    glColor3f(0.0 , 0.0, 1.0);
-    glVertex3d(0, 90, 0);
-    glVertex3d(0, 90, 2048);
-    glVertex3d(2048, 90, 2048);
-    glVertex3d(2048, 90, 0);
-    glEnd();*/
-    
     //print render
     glutSwapBuffers();
 }
 
 void init(void){
-    //plano de fundo
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_SMOOTH);
-    
-    //light
-    //lightInit();
-    
+
     // fog
-    GLfloat fogColor[] = { 0.9f, 0.9f, 0.9f, 1.0f};
+    GLfloat fogColor[] = { 0.7f, 0.7f, 0.7f, 1.0f};
     glFogi (GL_FOG_MODE, GL_LINEAR);
     glFogfv (GL_FOG_COLOR, fogColor);
     glFogf( GL_FOG_DENSITY, 1.0f );
-    //glFogf( GL_FOG_START, 100.0f );
-    //glFogf( GL_FOG_END, 1000.0f );
-    //glHint (GL_FOG_HINT, GL_FASTEST);
-    //glFogi(GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH);
-    glFogf( GL_FOG_START, 50.0f );            //set the starting depth to 0
-    glFogf( GL_FOG_END, 200.0f );            //set the fog's depth to 150 world units
-    glHint (GL_FOG_HINT, GL_NICEST);
-    glFogi( GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT );
+    glFogf( GL_FOG_START, 100.0f );
+    glFogf( GL_FOG_END, 1000.0f );
+    glHint (GL_FOG_HINT, GL_FASTEST);
+    glFogi(GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH);
     glEnable(GL_FOG);
     
     //esconder partes de entidades não visíveis
@@ -198,13 +166,11 @@ void init(void){
      //-------Forca bruta---------------------------------------------------------------
     g_bruteForce.MakeTerrainPlasma(256, 1.2f );
     g_bruteForce.SetHeightScale( 0.25f );
-    
     //set the terrain's lighting system up
     g_bruteForce.SetLightingType( SLOPE_LIGHT );
     g_bruteForce.SetLightColor( CVECTOR( 1.0f, 1.0f, 1.0f ) );
     g_bruteForce.CustomizeSlopeLighting( 1, 1, 0.2f, 0.9f, 15 );
     g_bruteForce.CalculateLighting( );
-    
     //load the various terrain tiles
    char file_image1[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowestTile.tga"};
     g_bruteForce.LoadTile( LOWEST_TILE, file_image1 );
@@ -214,31 +180,25 @@ void init(void){
     g_bruteForce.LoadTile( HIGH_TILE, file_image3 );
     char file_image4[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/highestTile.tga" };
     g_bruteForce.LoadTile( HIGHEST_TILE,file_image4);
-    
     //load the terrain's detail map
     char file_image5[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/detailMap.tga" };
     g_bruteForce.LoadDetailMap(file_image5);
     g_bruteForce.DoDetailMapping( g_bDetail, 8 );
-    
     //make the texture map, and then save it
     g_bruteForce.GenerateTextureMap( 256 );
     g_bruteForce.DoTextureMapping( g_bTexture );
-    g_bruteForce.DoMultitexturing(true);
-    
-    */
+    g_bruteForce.DoMultitexturing(true);*/
     
     
     //-------QUADTREE----------------------------------------------------------------
     //load the height map in
    /* g_quadtree.MakeTerrainFault( 513, 64, 0, 255, 0.25f );
     g_quadtree.SetHeightScale( 1.5f );
-    
     //set the terrain's lighting system up
     g_quadtree.SetLightingType( SLOPE_LIGHT );
     g_quadtree.SetLightColor( CVECTOR( 1.0f, 1.0f, 1.0f ) );
     g_quadtree.CustomizeSlopeLighting( 1, 1, 0.1f, 0.9f, 5 );
     g_quadtree.CalculateLighting( );
-    
     //load the various terrain tiles
     char file_image1[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowestTile.tga" };
     g_quadtree.LoadTile( LOWEST_TILE,  file_image1 );
@@ -248,34 +208,28 @@ void init(void){
     g_quadtree.LoadTile( HIGH_TILE,  file_image3);
      char file_image4[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/highestTile.tga" };
     g_quadtree.LoadTile( HIGHEST_TILE, file_image4 );
-    
     //load the terrain's detail map
      char file_image5[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/detailMap.tga" };
     g_quadtree.LoadDetailMap( file_image5 );
     g_quadtree.DoDetailMapping( g_bDetail, 16 );
-    
     //make the texture map, and then save it
     g_quadtree.GenerateTextureMap( 256 );
     g_quadtree.DoTextureMapping( g_bTexture );
     g_quadtree.DoMultitexturing( true );
-    
     //initiate the geomipmapping system
     g_quadtree.SetDetailLevel( g_fDetailLevel );
     g_quadtree.SetMinResolution( g_fMinResolution );
-    
     g_quadtree.Init();*/
     
     
     //initialize the ROAM system
     g_ROAM.MakeTerrainPlasma( 1024, 1.2f );
-    //g_ROAM.SetHeightScale( 1.0f );
-    
+    g_ROAM.SetHeightScale( 10.0f );
     //set the terrain's lighting system up
     g_ROAM.SetLightingType( SLOPE_LIGHT );
     g_ROAM.SetLightColor( CVECTOR( 1.0f, 1.0f, 1.0f ) );
     g_ROAM.CustomizeSlopeLighting( 1, 1, 0.2f, 0.9f, 7 );
     g_ROAM.CalculateLighting( );
-    
     //load the various terrain tiles
     char file_image1[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/lowestTile.tga" };
     g_ROAM.LoadTile( LOWEST_TILE, file_image1 );
@@ -289,12 +243,10 @@ void init(void){
     char file_image5[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/detailMap.tga" };
     g_ROAM.LoadDetailMap( file_image5 );
     g_ROAM.DoDetailMapping( g_bDetail, 16 );
-    
     //make the texture map, and then save it
     g_ROAM.GenerateTextureMap( 512 );
     g_ROAM.DoTextureMapping( g_bTexture );
     g_ROAM.DoMultitexturing( true );
-    
     //initialize the ROAM system
     g_ROAM.Init( g_iLevel, 65536, &g_camera );
     
@@ -323,32 +275,27 @@ void init(void){
      char file_image14[] = {"/Volumes/HD Mac/Workspaces/C++/xcode/terrainGenerator/terrainGenerator/data/clouds.tga" };
     g_skydome.LoadTexture( file_image14 );
   
+
+    //-------CAMERA----------------------------------------------------------
     alturaColisao = g_ROAM.GetTrueHeightAtPoint( g_camera.m_vecEyePos[0],
                                                 g_camera.m_vecEyePos[2] );
-    
     esferaY = alturaColisao + offset;
     cameraY = esferaY + offset_camera_player ;
-     //-------CAMERA----------------------------------------------------------
     g_camera.SetPosition( 128.0f, cameraY, 514.0f );
     g_camera.m_fYaw  += 175;
     g_camera.m_fPitch-= 40;
 }
 
 void reshape(int w, int h){
-    if( h==0 )    //Prevent a divide by zero (bad)
-        h= 1;    //Making height equal one
-    
-    glViewport( 0, 0, (GLfloat) w, (GLfloat) h );   //Reset the current viewport
-    glMatrixMode( GL_PROJECTION );   //Select the projection matrix
-    glLoadIdentity( );     //Reset the projection matrix
-    //Calculate the aspect ratio of the window
-    gluPerspective( 90,(GLfloat) w/(GLfloat) h, 1.0f, 3000.0f );
-    glMatrixMode( GL_MODELVIEW );  //Select the modelview matrix
+    if( h==0 )  h= 1;   //Prevent a divide by zero (bad)
+    glViewport( 0, 0, (GLfloat) w, (GLfloat) h );
+    glMatrixMode( GL_PROJECTION );
     glLoadIdentity( );
-    //posicionando a camera
-   // gluLookAt(cameraX, cameraY, cameraZ, esferaX, esferaY, esferaZ, 0.0, 1.0, 0.0);
+    gluPerspective( 90,(GLfloat) w/(GLfloat) h, 1.0f, 3000.0f );
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity( );
 }
-//implementação das funções
+
 void Specialkey(int key, int x, int y)
 {
     alturaColisao = g_ROAM.GetTrueHeightAtPoint( g_camera.m_vecEyePos[0],
@@ -375,7 +322,7 @@ void Specialkey(int key, int x, int y)
             }
             else{
                  esferaY = alturaColisao + offset;
-                cameraY = esferaY + offset_camera_player;
+                 cameraY = esferaY + offset_camera_player;
             }
             break;
         case GLUT_KEY_LEFT:
@@ -530,14 +477,14 @@ void mouse(int button, int state, int x, int y)
 
 void menu(int item){
     if(item == 1){
-       //g_bruteForce.UnloadTexture();
-       //g_bruteForce.UnloadLightMap();
-       //g_bruteForce.UnloadHeightMap();
-       //g_bruteForce.UnloadAllTiles();
-       //g_quadtree.UnloadAllTiles( );
-       // g_quadtree.UnloadTexture( );
-       // g_quadtree.UnloadHeightMap( );
-       // g_quadtree.Shutdown( );
+       /*g_bruteForce.UnloadTexture();
+        g_bruteForce.UnloadLightMap();
+        g_bruteForce.UnloadHeightMap();
+        g_bruteForce.UnloadAllTiles();*/
+       /*g_quadtree.UnloadAllTiles( );
+        g_quadtree.UnloadTexture( );
+        g_quadtree.UnloadHeightMap( );
+        g_quadtree.Shutdown( );*/
         g_ROAM.Shutdown( );
         g_ROAM.UnloadAllTiles( );
         g_ROAM.UnloadTexture( );
@@ -545,7 +492,6 @@ void menu(int item){
         exit(0);
     }
 }
-
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -559,7 +505,7 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(Specialkey);
     
-    //pop up menu experimental
+    //pop up menu para fechar o programa
     int submenu2;
     submenu2 = glutCreateMenu(selectColor);
     glutAddMenuEntry("Green", 1);
@@ -569,9 +515,10 @@ int main(int argc, char** argv) {
     glutAddMenuEntry("Quit Program", 1);
     glutAddSubMenu("Color", submenu2);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
+    
+    
     init();
     glutMainLoop();
-    
     return 0;
 }
 

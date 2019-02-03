@@ -18,7 +18,6 @@
 		CEB99E5321F133D0008AF8CB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E5221F133D0008AF8CB /* main.cpp */; };
 		CEB99E5B21F14F37008AF8CB /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5A21F14F37008AF8CB /* GLUT.framework */; };
 		CEB99E5D21F14F3E008AF8CB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5C21F14F3D008AF8CB /* OpenGL.framework */; };
-		CEB99E6521F1561A008AF8CB /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6121F1561A008AF8CB /* light.cpp */; };
 		CEB99E7021F3A38B008AF8CB /* terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6D21F3A38B008AF8CB /* terrain.cpp */; };
 		CEB99E7121F3A38B008AF8CB /* brute_force.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */; };
 /* End PBXBuildFile section */
@@ -57,8 +56,6 @@
 		CEB99E5221F133D0008AF8CB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		CEB99E5A21F14F37008AF8CB /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		CEB99E5C21F14F3D008AF8CB /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		CEB99E6021F1561A008AF8CB /* light.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = light.hpp; sourceTree = "<group>"; };
-		CEB99E6121F1561A008AF8CB /* light.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = light.cpp; sourceTree = "<group>"; };
 		CEB99E6C21F3A38A008AF8CB /* terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = terrain.h; sourceTree = "<group>"; };
 		CEB99E6D21F3A38B008AF8CB /* terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = terrain.cpp; sourceTree = "<group>"; };
 		CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = brute_force.cpp; sourceTree = "<group>"; };
@@ -131,8 +128,6 @@
 				CEB99E7221F3AD67008AF8CB /* height128.raw */,
 				CEB99E6D21F3A38B008AF8CB /* terrain.cpp */,
 				CEB99E6C21F3A38A008AF8CB /* terrain.h */,
-				CEB99E6121F1561A008AF8CB /* light.cpp */,
-				CEB99E6021F1561A008AF8CB /* light.hpp */,
 				CEB99E5221F133D0008AF8CB /* main.cpp */,
 			);
 			path = terrainGenerator;
@@ -214,7 +209,6 @@
 				CE239DE82207335C00986130 /* image.cpp in Sources */,
 				CE239DE92207335C00986130 /* math_ops.cpp in Sources */,
 				CE239DD722071BF200986130 /* water.cpp in Sources */,
-				CEB99E6521F1561A008AF8CB /* light.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
