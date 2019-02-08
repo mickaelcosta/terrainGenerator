@@ -20,24 +20,29 @@
 #include "brute_force.h"
 
 
+
+
+
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 //- DEFINITIONS ------------------------------------------------
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 
-
 //--------------------------------------------------------------
-// Name:			CBRUTE_FORCE::Render - public
-// Description:		Render the terrain height field
-// Arguments:		None
-// Return Value:	None
+// Name:            CBRUTE_FORCE::Render - public
+// Description:        Render the terrain height field
+// Arguments:        None
+// Return Value:    None
 //--------------------------------------------------------------
 void CBRUTE_FORCE::Render( void )
 {
-
     float fTexLeft, fTexBottom, fTexTop;
     int    x, z;
+    
+    
+    //cull non camera-facing polygons
+    glEnable( GL_CULL_FACE );
     
     if( m_bMultitexture && m_bDetailMapping && m_bTextureMapping )
     {
@@ -81,7 +86,7 @@ void CBRUTE_FORCE::Render( void )
                 glMultiTexCoord2fARB( GL_TEXTURE0_ARB, fTexLeft, fTexTop );
                 glMultiTexCoord2fARB( GL_TEXTURE1_ARB, fTexLeft*m_iRepeatDetailMap, fTexTop*m_iRepeatDetailMap );
                 glVertex3f( ( float )x, GetScaledHeightAtPoint( x, z+1 ), ( float )z+1 );
-                
+       
             }
             
             //end the triangle strip
@@ -134,7 +139,7 @@ void CBRUTE_FORCE::Render( void )
                     glColor3ub( 255, 255, 255 );
                     glMultiTexCoord2fARB( GL_TEXTURE0_ARB, fTexLeft, fTexTop );
                     glVertex3f( ( float )x, GetScaledHeightAtPoint( x, z+1 ), ( float )z+1 );
-                
+                    
                 }
                 //end the triangle strip
                 glEnd( );

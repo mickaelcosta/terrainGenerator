@@ -159,7 +159,7 @@ void CROAM::Init( int iMaxLevel, int iPoolSize, CCAMERA* pCamera )
 		CLAMP( pDmnd->m_fVert[0], 0, ( m_iSize-1 ) );
 		CLAMP( pDmnd->m_fVert[2], 0, ( m_iSize-1 ) );
 
-		pDmnd->m_fVert[1]= ( float )GetTrueHeightAtPoint( ( int )( fabs( pDmnd->m_fVert[0] ) ),
+		pDmnd->m_fVert[1]= ( float )GetScaledHeightAtPoint( ( int )( fabs( pDmnd->m_fVert[0] ) ),
 														  ( int )( fabs( pDmnd->m_fVert[2] ) ) );
 		pDmnd->m_usTriIndex[0]= pDmnd->m_usTriIndex[1]= 0;
 
@@ -660,7 +660,7 @@ SROAM_DIAMOND* CROAM::GetChild( SROAM_DIAMOND* pDmnd, int i )
 	pParentVert1= k->m_pParent[3]->m_fVert;
 	k->m_fVert[0]= ( float )fabs( ( pParentVert0[0] + pParentVert1[0] )/2.0f );
 	k->m_fVert[2]= ( float )fabs( ( pParentVert0[2] + pParentVert1[2] )/2.0f );
-	k->m_fVert[1]= GetTrueHeightAtPoint( ( int )k->m_fVert[0],
+	k->m_fVert[1]= GetScaledHeightAtPoint( ( int )k->m_fVert[0],
 										 ( int )k->m_fVert[2] );
 
     //compute radius of diamond bounding sphere (squared)

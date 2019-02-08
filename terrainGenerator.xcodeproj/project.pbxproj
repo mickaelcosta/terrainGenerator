@@ -15,7 +15,8 @@
 		CE239DE82207335C00986130 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DE32207335C00986130 /* image.cpp */; };
 		CE239DE92207335C00986130 /* math_ops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DE52207335C00986130 /* math_ops.cpp */; };
 		CE239DEC2207345100986130 /* skydome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239DEB2207345100986130 /* skydome.cpp */; };
-		CEB99E5321F133D0008AF8CB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E5221F133D0008AF8CB /* main.cpp */; };
+		CE239E1B2208B79500986130 /* particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239E1A2208B79400986130 /* particle.cpp */; };
+		CE239E1D2208C40D00986130 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE239E1C2208C40D00986130 /* main.cpp */; };
 		CEB99E5B21F14F37008AF8CB /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5A21F14F37008AF8CB /* GLUT.framework */; };
 		CEB99E5D21F14F3E008AF8CB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB99E5C21F14F3D008AF8CB /* OpenGL.framework */; };
 		CEB99E7021F3A38B008AF8CB /* terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEB99E6D21F3A38B008AF8CB /* terrain.cpp */; };
@@ -52,8 +53,11 @@
 		CE239DE62207335C00986130 /* image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = image.h; sourceTree = "<group>"; };
 		CE239DEA2207345000986130 /* skydome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = skydome.h; sourceTree = "<group>"; };
 		CE239DEB2207345100986130 /* skydome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = skydome.cpp; sourceTree = "<group>"; };
+		CE239E182208B79400986130 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resource.h; sourceTree = "<group>"; };
+		CE239E192208B79400986130 /* particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = particle.h; sourceTree = "<group>"; };
+		CE239E1A2208B79400986130 /* particle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = particle.cpp; sourceTree = "<group>"; };
+		CE239E1C2208C40D00986130 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		CEB99E4F21F133D0008AF8CB /* terrainGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = terrainGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEB99E5221F133D0008AF8CB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		CEB99E5A21F14F37008AF8CB /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		CEB99E5C21F14F3D008AF8CB /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		CEB99E6C21F3A38A008AF8CB /* terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = terrain.h; sourceTree = "<group>"; };
@@ -82,6 +86,7 @@
 			children = (
 				CE239DE12207335B00986130 /* camera.cpp */,
 				CE239DE22207335C00986130 /* camera.h */,
+				CE239E182208B79400986130 /* resource.h */,
 				CE239DE32207335C00986130 /* image.cpp */,
 				CE239DE62207335C00986130 /* image.h */,
 				CE239DE52207335C00986130 /* math_ops.cpp */,
@@ -112,6 +117,9 @@
 			children = (
 				CE239DE02207331900986130 /* util */,
 				CEB99E7321F4E185008AF8CB /* data */,
+				CE239E1C2208C40D00986130 /* main.cpp */,
+				CE239E1A2208B79400986130 /* particle.cpp */,
+				CE239E192208B79400986130 /* particle.h */,
 				CE239DEB2207345100986130 /* skydome.cpp */,
 				CE239DEA2207345000986130 /* skydome.h */,
 				CE239DD82207263E00986130 /* skybox.cpp */,
@@ -128,7 +136,6 @@
 				CEB99E7221F3AD67008AF8CB /* height128.raw */,
 				CEB99E6D21F3A38B008AF8CB /* terrain.cpp */,
 				CEB99E6C21F3A38A008AF8CB /* terrain.h */,
-				CEB99E5221F133D0008AF8CB /* main.cpp */,
 			);
 			path = terrainGenerator;
 			sourceTree = "<group>";
@@ -200,9 +207,10 @@
 			files = (
 				CE239DEC2207345100986130 /* skydome.cpp in Sources */,
 				CE1C9DFF22052DF1001BC29D /* quadtree.cpp in Sources */,
-				CEB99E5321F133D0008AF8CB /* main.cpp in Sources */,
+				CE239E1D2208C40D00986130 /* main.cpp in Sources */,
 				CEB99E7021F3A38B008AF8CB /* terrain.cpp in Sources */,
 				CE239DDA2207263F00986130 /* skybox.cpp in Sources */,
+				CE239E1B2208B79500986130 /* particle.cpp in Sources */,
 				CE239DE72207335C00986130 /* camera.cpp in Sources */,
 				CE239DD02206778D00986130 /* ROAM.cpp in Sources */,
 				CEB99E7121F3A38B008AF8CB /* brute_force.cpp in Sources */,
