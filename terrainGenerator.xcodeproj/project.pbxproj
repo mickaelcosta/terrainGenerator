@@ -38,7 +38,6 @@
 /* Begin PBXFileReference section */
 		CE1C9DFD22052DF0001BC29D /* quadtree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = quadtree.cpp; sourceTree = "<group>"; };
 		CE1C9DFE22052DF0001BC29D /* quadtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quadtree.h; sourceTree = "<group>"; };
-		CE1C9E0022053B43001BC29D /* mickael.raw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mickael.raw; sourceTree = "<group>"; };
 		CE239DCE2206778D00986130 /* ROAM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROAM.cpp; sourceTree = "<group>"; };
 		CE239DD12206936D00986130 /* ROAM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ROAM.h; sourceTree = "<group>"; };
 		CE239DD522071BF200986130 /* water.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = water.cpp; sourceTree = "<group>"; };
@@ -128,7 +127,6 @@
 				CE239DD622071BF200986130 /* water.h */,
 				CE239DCE2206778D00986130 /* ROAM.cpp */,
 				CE239DD12206936D00986130 /* ROAM.h */,
-				CE1C9E0022053B43001BC29D /* mickael.raw */,
 				CE1C9DFD22052DF0001BC29D /* quadtree.cpp */,
 				CE1C9DFE22052DF0001BC29D /* quadtree.h */,
 				CEB99E6E21F3A38B008AF8CB /* brute_force.cpp */,

@@ -320,16 +320,8 @@ void CWATER::Render( bool bUseCVA )
 	glEnable( GL_TEXTURE_GEN_T );
 	glEnable( GL_TEXTURE_GEN_R );
 
-	//lock the arrays
-	//if( bUseCVA )
-		//glLockArraysEXT( 0, m_iNumVertices );
-
 	//draw the water patch
 	glDrawElements( GL_TRIANGLES, m_iNumIndices, GL_UNSIGNED_INT, m_pPolyIndexArray );
-
-	//unlock the arrays
-	//if( bUseCVA )
-		//glUnlockArraysEXT();
 
 	//disable vertex arrays
 	glDisableClientState( GL_VERTEX_ARRAY );

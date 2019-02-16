@@ -18,6 +18,7 @@
 #include "water.h"
 #include "skybox.h"
 #include "skydome.h"
+#include <time.h>
 
 using namespace std;
 
@@ -45,18 +46,24 @@ GLfloat alturaColisao, offset = 2.0f, offset_camera_player = 10.0f, scale_map = 
 GLfloat esferaX = 65.0f, esferaY, esferaZ = 95.0f;
 GLfloat cameraX = esferaX, cameraY , cameraZ = esferaZ + 10.0;
 int g_iScreenHeight , g_iScreenWidth;
+long initial_time = time(NULL), final_time, frame_count = 0;
 
 //-----------------------------------------
 //------ funções --------------------------
 //-----------------------------------------
 
+void idle (int value){
+    glutPostRedisplay();
+    glutTimerFunc((1000/35), idle, 1);
+    
+}
 void desenhaEsfera(GLfloat x, GLfloat y, GLfloat z){
     glPushMatrix();
     glTranslatef(x, y, z);
     glutSolidSphere(1, 10, 10);
     glPopMatrix();
-    cout << "esfera: x "<<esferaX <<" y " << esferaY <<" z " << esferaZ <<endl;
-    cout << "camera: x "<<cameraX <<" y " << cameraY <<" z " << cameraZ <<endl;
+   // cout << "esfera: x "<<esferaX <<" y " << esferaY <<" z " << esferaZ <<endl;
+   // cout << "camera: x "<<cameraX <<" y " << cameraY <<" z " << cameraZ <<endl;
 }
 
 void display(void){
@@ -73,13 +80,8 @@ void display(void){
     g_camera.CalculateViewFrustum( );
     
     //------------RENDER SKYDOME---------------------
-    glDisable( GL_CULL_FACE );
-    glDisable( GL_DEPTH_TEST );
-    glDepthMask( GL_FALSE );
     g_skydome.Set( g_camera.m_vecEyePos[0], g_camera.m_vecEyePos[1]-400.0f, g_camera.m_vecEyePos[2] );
     g_skydome.Render( 0.009f, true );
-    glDepthMask( GL_TRUE );
-    glEnable( GL_DEPTH_TEST );
     
     //------------TERRENO POR FORCA BRUTA---------------------
     glFrontFace( GL_CCW );
@@ -135,6 +137,13 @@ void display(void){
     glEnd();
 
     glutSwapBuffers();
+    frame_count++;
+    final_time = time(NULL);
+    if(final_time - initial_time > 0){
+        std::cout << "FPS: " << frame_count / (final_time - initial_time) << std::endl;
+        frame_count = 0;
+        initial_time = final_time;
+    }
 }
 
 void init(void){
@@ -143,7 +152,7 @@ void init(void){
     glDisable( GL_LIGHTING );         //disable lighting
     glDisable( GL_BLEND );            //disable blending
     glEnable( GL_DEPTH_TEST );        //enable depth testing
-    
+    glEnable(GL_SCISSOR_TEST);        //scissor what's outside the window
     glShadeModel( GL_SMOOTH );        //enable smooth shading
     glClearDepth( 1.0 );              //depth buffer setup
     glDepthFunc( GL_LEQUAL );          //set the type of depth test
@@ -216,10 +225,10 @@ void reshape(int w, int h){
     if( h==0 )  h= 1;   //Prevent a divide by zero (bad)
     g_iScreenWidth = w;
     g_iScreenHeight = h;
-    glViewport( 0, 0, (GLfloat) w, (GLfloat) h );
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity( );
-    gluPerspective( 90,(GLfloat) w/(GLfloat) h, 1.0f, 3000.0f );
+    glViewport( 0, 0, (GLfloat) w, (GLfloat) h );
+    gluPerspective(90,(GLfloat) w/(GLfloat) h, 1.0f, 2000.0f );
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity( );
 }
@@ -358,7 +367,7 @@ void menu(int item){
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB);
-    glutInitWindowSize(800, 800);
+    glutInitWindowSize(1280, 800);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("Terrain Renderer");
     glutDisplayFunc(display);
@@ -366,6 +375,7 @@ int main(int argc, char** argv) {
     glutMouseFunc(mouse);
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(Specialkey);
+    glutTimerFunc((1000/35), idle, 1);
     
     //pop up menu para fechar o programa
     glutCreateMenu(menu);
